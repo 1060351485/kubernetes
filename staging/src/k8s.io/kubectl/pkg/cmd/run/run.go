@@ -268,10 +268,9 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 		return fmt.Errorf("--image is required")
 	}
 	validImageRef := reference.ReferenceRegexp.MatchString(imageName)
-	return fmt.Errorf("Hahahahhhhahahahahahahahahahahahh")
 	klog.V(4).Infof("Image is from IPFS1: %v", imageName)
 
-	if len(imageName) > 5 && imageName[:5]=="/ipfs/"{
+	if len(imageName) > 5 && imageName[:6]=="/ipfs/"{
 		klog.V(4).Infof("Image is from IPFS: %v", imageName)
 	}else{
 		if !validImageRef {
