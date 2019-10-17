@@ -150,6 +150,9 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 // a default tag will be applied.
 func applyDefaultImageTag(image string) (string, error) {
 	named, err := dockerref.ParseNormalizedNamed(image)
+	if image[:6] == "/ipfs/"{
+		return image, nil
+	}
 	if err != nil {
 		return "", fmt.Errorf("couldn't parse image reference %q: %v", image, err)
 	}
@@ -161,6 +164,7 @@ func applyDefaultImageTag(image string) (string, error) {
 		// image to be fully qualified as docker.io/$name if it's a short name
 		// (e.g. just busybox). We don't want that to happen to keep the CRI
 		// agnostic wrt image names and default hostnames.
+
 		image = image + ":" + parsers.DefaultImageTag
 	}
 	return image, nil
