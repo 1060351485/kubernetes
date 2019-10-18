@@ -18,12 +18,12 @@ package images
 
 import (
 	"fmt"
-
 	dockerref "github.com/docker/distribution/reference"
-	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/core/v1"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/flowcontrol"
 	"k8s.io/klog"
+	"os/exec"
 
 	runtimeapi "k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
 	kubecontainer "k8s.io/kubernetes/pkg/kubelet/container"
@@ -87,6 +87,7 @@ func (m *imageManager) logIt(ref *v1.ObjectReference, eventtype, event, prefix, 
 // EnsureImageExists pulls the image for the specified pod and container, and returns
 // (imageRef, error message, error).
 func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, pullSecrets []v1.Secret, podSandboxConfig *runtimeapi.PodSandboxConfig) (string, string, error) {
+	klog.V(0).Infof("[Jiaheng] EnsureImageExists called")
 	logPrefix := fmt.Sprintf("%s/%s", pod.Name, container.Image)
 	ref, err := kubecontainer.GenerateContainerRef(pod, container)
 	if err != nil {
@@ -100,6 +101,32 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		m.logIt(ref, v1.EventTypeWarning, events.FailedToInspectImage, logPrefix, msg, klog.Warning)
 		return "", msg, ErrInvalidImageName
 	}
+
+
+	cmd0 := exec.Command("/usr/local/bin/ipfs", "id")
+	out0, err0 := cmd0.CombinedOutput()
+	if err0 != nil {
+		msg := fmt.Sprintf("[Jiaheng] ipfs id failed: %v, with error: %s", err0, out0)
+		return "", msg, ErrImageInspect
+	}
+	klog.V(0).Infof("[Jiaheng] ipfs id pass")
+
+	klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
+	cmd1 := exec.Command("/usr/local/bin/ipfs", "get", image[6:], "-o", "/var/tmp/")
+	out1, err1 := cmd1.CombinedOutput()
+	if err1 != nil {
+	     msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, with error %s", err1, out1)
+	     return "", msg, ErrImageInspect
+	}
+	klog.V(0).Infof("[Jiaheng] ipfs get image pass")
+
+	cmd2 := exec.Command("/bin/sh", "-c", "sudo docker load -i /var/tmp/"+image[6:])
+	out2, err2 := cmd2.CombinedOutput()
+	if err2 != nil {
+		msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, with err:", err2, out2)
+		return "", msg, ErrImageInspect
+	}
+	klog.V(0).Infof("[Jiaheng] docker load image pass")
 
 	spec := kubecontainer.ImageSpec{Image: image}
 	imageRef, err := m.imageService.GetImageRef(spec)
@@ -149,10 +176,10 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 // applyDefaultImageTag parses a docker image string, if it doesn't contain any tag or digest,
 // a default tag will be applied.
 func applyDefaultImageTag(image string) (string, error) {
-	named, err := dockerref.ParseNormalizedNamed(image)
 	if image[:6] == "/ipfs/"{
 		return image, nil
 	}
+	named, err := dockerref.ParseNormalizedNamed(image)
 	if err != nil {
 		return "", fmt.Errorf("couldn't parse image reference %q: %v", image, err)
 	}
