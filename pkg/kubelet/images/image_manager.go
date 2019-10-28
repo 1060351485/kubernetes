@@ -23,6 +23,7 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/flowcontrol"
 	"k8s.io/klog"
+	"os"
 	"os/exec"
 
 	runtimeapi "k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
@@ -102,31 +103,33 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		return "", msg, ErrInvalidImageName
 	}
 
+	if image[:7] == "/ipfs/" {
+		downloadPath := "/var/tmp/"
+		klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
 
-	cmd0 := exec.Command("/usr/local/bin/ipfs", "id")
-	out0, err0 := cmd0.CombinedOutput()
-	if err0 != nil {
-		msg := fmt.Sprintf("[Jiaheng] ipfs id failed: %v, with error: %s", err0, out0)
-		return "", msg, ErrImageInspect
-	}
-	klog.V(0).Infof("[Jiaheng] ipfs id pass")
+		// image not exist
+		if _, err := os.Stat(downloadPath + image[6:]); os.IsNotExist(err) {
+			cmd1 := exec.Command("/usr/local/bin/ipfs", "get", image[6:], "-o", downloadPath)
+			//out1, err1 := cmd1.CombinedOutput()
+			out1 := ""
+			err1 := cmd1.Wait()
+			if err1 != nil {
+				msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, with error %s", err1, out1)
+				return "", msg, ErrImageInspect
+			}
+			klog.V(0).Infof("[Jiaheng] ipfs get image pass")
+		}
 
-	klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
-	cmd1 := exec.Command("/usr/local/bin/ipfs", "get", image[6:], "-o", "/var/tmp/")
-	out1, err1 := cmd1.CombinedOutput()
-	if err1 != nil {
-	     msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, with error %s", err1, out1)
-	     return "", msg, ErrImageInspect
+		cmd2 := exec.Command("/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:])
+		//out2, err2 := cmd2.CombinedOutput()
+		out2 := ""
+		err2 := cmd2.Wait()
+		if err2 != nil {
+			msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, with err:", err2, out2)
+			return "", msg, ErrImageInspect
+		}
+		klog.V(0).Infof("[Jiaheng] docker load image pass")
 	}
-	klog.V(0).Infof("[Jiaheng] ipfs get image pass")
-
-	cmd2 := exec.Command("/bin/sh", "-c", "sudo docker load -i /var/tmp/"+image[6:])
-	out2, err2 := cmd2.CombinedOutput()
-	if err2 != nil {
-		msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, with err:", err2, out2)
-		return "", msg, ErrImageInspect
-	}
-	klog.V(0).Infof("[Jiaheng] docker load image pass")
 
 	spec := kubecontainer.ImageSpec{Image: image}
 	imageRef, err := m.imageService.GetImageRef(spec)
