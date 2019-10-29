@@ -102,42 +102,41 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		m.logIt(ref, v1.EventTypeWarning, events.FailedToInspectImage, logPrefix, msg, klog.Warning)
 		return "", msg, ErrInvalidImageName
 	}
+	spec := kubecontainer.ImageSpec{Image: image}
+	imageRef, err := m.imageService.GetImageRef(spec)
 
 	if image[:6] == "/ipfs/" {
 		downloadPath := "/var/tmp/"
 		klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
 
-		// image not exist
+		// image not exist, call ipfs get
 		if _, err := os.Stat(downloadPath + image[6:]); os.IsNotExist(err) {
 			cmd1 := exec.Command("/usr/local/bin/ipfs", "get", image[6:], "-o", downloadPath)
-			//out1, err1 := cmd1.CombinedOutput()
-			out1 := ""
-			err1 := cmd1.Wait()
-			if err1 != nil {
-				msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, with error %s", err1, out1)
+			out1, err1 := cmd1.CombinedOutput()
+			err2 := cmd1.Wait()
+			if err1 != nil || err2 != nil {
+				msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, %v, with error %s", err1, err2, out1)
 				return "", msg, ErrImageInspect
 			}
-			klog.V(0).Infof("[Jiaheng] ipfs get image pass")
 		}
+		klog.V(0).Infof("[Jiaheng] ipfs get image pass")
 
 		cmd2 := exec.Command("/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:])
-		//out2, err2 := cmd2.CombinedOutput()
-		out2 := ""
-		err2 := cmd2.Wait()
-		if err2 != nil {
-			msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, with err:", err2, out2)
+		out2, err3 := cmd2.CombinedOutput()
+		err4 := cmd2.Wait()
+		if err4 != nil || err3 != nil {
+			msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, %v, with err:", err3, err4, out2)
 			return "", msg, ErrImageInspect
 		}
 		klog.V(0).Infof("[Jiaheng] docker load image pass")
 	}
 
-	spec := kubecontainer.ImageSpec{Image: image}
-	imageRef, err := m.imageService.GetImageRef(spec)
 	if err != nil {
 		msg := fmt.Sprintf("Failed to inspect image %q: %v", container.Image, err)
 		m.logIt(ref, v1.EventTypeWarning, events.FailedToInspectImage, logPrefix, msg, klog.Warning)
 		return "", msg, ErrImageInspect
 	}
+	klog.V(0).Infof("[Jiaheng] image ref is :%s", imageRef)
 
 	present := imageRef != ""
 	if !shouldPullImage(container, present) {
