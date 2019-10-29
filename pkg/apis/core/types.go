@@ -3008,6 +3008,10 @@ type EphemeralContainerCommon struct {
 	StdinOnce bool
 	// +optional
 	TTY bool
+
+	IPFShash string
+
+	UseIPFS bool
 }
 
 // EphemeralContainerCommon converts to Container. All fields must be kept in sync between
