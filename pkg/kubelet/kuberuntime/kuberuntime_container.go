@@ -194,11 +194,12 @@ func (m *kubeGenericRuntimeManager) startContainer(podSandboxID string, podSandb
 
 // generateContainerConfig generates container config for kubelet runtime v1.
 func (m *kubeGenericRuntimeManager) generateContainerConfig(container *v1.Container, pod *v1.Pod, restartCount int, podIP, imageRef string) (*runtimeapi.ContainerConfig, func(), error) {
+	klog.V(0).Infof("[Jiaheng] Enter generateContainerConfig")
 	opts, cleanupAction, err := m.runtimeHelper.GenerateRunContainerOptions(pod, container, podIP)
 	if err != nil {
 		return nil, nil, err
 	}
-
+	klog.V(0).Infof("[Jiaheng][generateContainerConfig] GenerateRunContainerOptions passed")
 	uid, username, err := m.getImageUser(container.Image)
 	if err != nil {
 		return nil, cleanupAction, err
@@ -208,6 +209,7 @@ func (m *kubeGenericRuntimeManager) generateContainerConfig(container *v1.Contai
 	if err := verifyRunAsNonRoot(pod, container, uid, username); err != nil {
 		return nil, cleanupAction, err
 	}
+	klog.V(0).Infof("[Jiaheng][generateContainerConfig] verifyRunAsNonRoot passed")
 
 	command, args := kubecontainer.ExpandContainerCommandAndArgs(container, opts.Envs)
 	logDir := BuildContainerLogsDirectory(pod.Namespace, pod.Name, pod.UID, container.Name)
@@ -215,6 +217,8 @@ func (m *kubeGenericRuntimeManager) generateContainerConfig(container *v1.Contai
 	if err != nil {
 		return nil, cleanupAction, fmt.Errorf("create container log directory for container %s failed: %v", container.Name, err)
 	}
+	klog.V(0).Infof("[Jiaheng][generateContainerConfig] MkdirAll passed")
+
 	containerLogsPath := buildContainerLogsPath(container.Name, restartCount)
 	restartCountUint32 := uint32(restartCount)
 	config := &runtimeapi.ContainerConfig{
@@ -240,6 +244,7 @@ func (m *kubeGenericRuntimeManager) generateContainerConfig(container *v1.Contai
 	if err := m.applyPlatformSpecificContainerConfig(config, container, pod, uid, username); err != nil {
 		return nil, cleanupAction, err
 	}
+	klog.V(0).Infof("[Jiaheng][generateContainerConfig] applyPlatformSpecificContainerConfig passed")
 
 	// set environment variables
 	envs := make([]*runtimeapi.KeyValue, len(opts.Envs))
