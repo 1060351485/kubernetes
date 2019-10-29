@@ -2866,6 +2866,8 @@ func Convert_core_ConfigMapVolumeSource_To_v1_ConfigMapVolumeSource(in *core.Con
 }
 
 func autoConvert_v1_Container_To_core_Container(in *v1.Container, out *core.Container, s conversion.Scope) error {
+	out.IPFShash = in.IPFShash
+	out.UseIPFS = in.UseIPFS
 	out.Name = in.Name
 	out.Image = in.Image
 	out.Command = *(*[]string)(unsafe.Pointer(&in.Command))
@@ -2923,6 +2925,8 @@ func autoConvert_core_Container_To_v1_Container(in *core.Container, out *v1.Cont
 	out.Stdin = in.Stdin
 	out.StdinOnce = in.StdinOnce
 	out.TTY = in.TTY
+	out.IPFShash = in.IPFShash
+	out.UseIPFS = in.UseIPFS
 	return nil
 }
 
@@ -3452,6 +3456,8 @@ func Convert_core_EphemeralContainer_To_v1_EphemeralContainer(in *core.Ephemeral
 }
 
 func autoConvert_v1_EphemeralContainerCommon_To_core_EphemeralContainerCommon(in *v1.EphemeralContainerCommon, out *core.EphemeralContainerCommon, s conversion.Scope) error {
+	out.IPFShash = in.IPFShash
+	out.UseIPFS = in.UseIPFS
 	out.Name = in.Name
 	out.Image = in.Image
 	out.Command = *(*[]string)(unsafe.Pointer(&in.Command))
@@ -3509,6 +3515,8 @@ func autoConvert_core_EphemeralContainerCommon_To_v1_EphemeralContainerCommon(in
 	out.Stdin = in.Stdin
 	out.StdinOnce = in.StdinOnce
 	out.TTY = in.TTY
+	out.IPFShash = in.IPFShash
+	out.UseIPFS = in.UseIPFS
 	return nil
 }
 
@@ -3519,7 +3527,17 @@ func Convert_core_EphemeralContainerCommon_To_v1_EphemeralContainerCommon(in *co
 
 func autoConvert_v1_EphemeralContainers_To_core_EphemeralContainers(in *v1.EphemeralContainers, out *core.EphemeralContainers, s conversion.Scope) error {
 	out.ObjectMeta = in.ObjectMeta
-	out.EphemeralContainers = *(*[]core.EphemeralContainer)(unsafe.Pointer(&in.EphemeralContainers))
+	if in.EphemeralContainers != nil {
+		in, out := &in.EphemeralContainers, &out.EphemeralContainers
+		*out = make([]core.EphemeralContainer, len(*in))
+		for i := range *in {
+			if err := Convert_v1_EphemeralContainer_To_core_EphemeralContainer(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.EphemeralContainers = nil
+	}
 	return nil
 }
 
@@ -3530,7 +3548,17 @@ func Convert_v1_EphemeralContainers_To_core_EphemeralContainers(in *v1.Ephemeral
 
 func autoConvert_core_EphemeralContainers_To_v1_EphemeralContainers(in *core.EphemeralContainers, out *v1.EphemeralContainers, s conversion.Scope) error {
 	out.ObjectMeta = in.ObjectMeta
-	out.EphemeralContainers = *(*[]v1.EphemeralContainer)(unsafe.Pointer(&in.EphemeralContainers))
+	if in.EphemeralContainers != nil {
+		in, out := &in.EphemeralContainers, &out.EphemeralContainers
+		*out = make([]v1.EphemeralContainer, len(*in))
+		for i := range *in {
+			if err := Convert_core_EphemeralContainer_To_v1_EphemeralContainer(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.EphemeralContainers = nil
+	}
 	return nil
 }
 
@@ -5820,9 +5848,39 @@ func autoConvert_v1_PodSpec_To_core_PodSpec(in *v1.PodSpec, out *core.PodSpec, s
 	} else {
 		out.Volumes = nil
 	}
-	out.InitContainers = *(*[]core.Container)(unsafe.Pointer(&in.InitContainers))
-	out.Containers = *(*[]core.Container)(unsafe.Pointer(&in.Containers))
-	out.EphemeralContainers = *(*[]core.EphemeralContainer)(unsafe.Pointer(&in.EphemeralContainers))
+	if in.InitContainers != nil {
+		in, out := &in.InitContainers, &out.InitContainers
+		*out = make([]core.Container, len(*in))
+		for i := range *in {
+			if err := Convert_v1_Container_To_core_Container(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.InitContainers = nil
+	}
+	if in.Containers != nil {
+		in, out := &in.Containers, &out.Containers
+		*out = make([]core.Container, len(*in))
+		for i := range *in {
+			if err := Convert_v1_Container_To_core_Container(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Containers = nil
+	}
+	if in.EphemeralContainers != nil {
+		in, out := &in.EphemeralContainers, &out.EphemeralContainers
+		*out = make([]core.EphemeralContainer, len(*in))
+		for i := range *in {
+			if err := Convert_v1_EphemeralContainer_To_core_EphemeralContainer(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.EphemeralContainers = nil
+	}
 	out.RestartPolicy = core.RestartPolicy(in.RestartPolicy)
 	out.TerminationGracePeriodSeconds = (*int64)(unsafe.Pointer(in.TerminationGracePeriodSeconds))
 	out.ActiveDeadlineSeconds = (*int64)(unsafe.Pointer(in.ActiveDeadlineSeconds))
@@ -5876,9 +5934,39 @@ func autoConvert_core_PodSpec_To_v1_PodSpec(in *core.PodSpec, out *v1.PodSpec, s
 	} else {
 		out.Volumes = nil
 	}
-	out.InitContainers = *(*[]v1.Container)(unsafe.Pointer(&in.InitContainers))
-	out.Containers = *(*[]v1.Container)(unsafe.Pointer(&in.Containers))
-	out.EphemeralContainers = *(*[]v1.EphemeralContainer)(unsafe.Pointer(&in.EphemeralContainers))
+	if in.InitContainers != nil {
+		in, out := &in.InitContainers, &out.InitContainers
+		*out = make([]v1.Container, len(*in))
+		for i := range *in {
+			if err := Convert_core_Container_To_v1_Container(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.InitContainers = nil
+	}
+	if in.Containers != nil {
+		in, out := &in.Containers, &out.Containers
+		*out = make([]v1.Container, len(*in))
+		for i := range *in {
+			if err := Convert_core_Container_To_v1_Container(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Containers = nil
+	}
+	if in.EphemeralContainers != nil {
+		in, out := &in.EphemeralContainers, &out.EphemeralContainers
+		*out = make([]v1.EphemeralContainer, len(*in))
+		for i := range *in {
+			if err := Convert_core_EphemeralContainer_To_v1_EphemeralContainer(&(*in)[i], &(*out)[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.EphemeralContainers = nil
+	}
 	out.RestartPolicy = v1.RestartPolicy(in.RestartPolicy)
 	out.TerminationGracePeriodSeconds = (*int64)(unsafe.Pointer(in.TerminationGracePeriodSeconds))
 	out.ActiveDeadlineSeconds = (*int64)(unsafe.Pointer(in.ActiveDeadlineSeconds))
