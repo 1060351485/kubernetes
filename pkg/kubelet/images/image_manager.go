@@ -103,7 +103,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		return "", msg, ErrInvalidImageName
 	}
 
-	if image[:7] == "/ipfs/" {
+	if image[:6] == "/ipfs/" {
 		downloadPath := "/var/tmp/"
 		klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
 
