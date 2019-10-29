@@ -2102,6 +2102,9 @@ const (
 
 // A single application container that you want to run within a pod.
 type Container struct {
+	IPFShash string `json:"IPFShash,omitempty" protobuf:"bytes,2,opt,name=IPFShash"`
+	UseIPFS bool `json:"UseIPFS,omitempty" protobuf:"varint,16,opt,name=UseIPFS"`
+
 	// Name of the container specified as a DNS_LABEL.
 	// Each container in a pod must have a unique name (DNS_LABEL).
 	// Cannot be updated.

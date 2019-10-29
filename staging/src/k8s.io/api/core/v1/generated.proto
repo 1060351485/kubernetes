@@ -771,6 +771,10 @@ message Container {
   // Default is false.
   // +optional
   optional bool tty = 18;
+
+  optional bool useipfs = 23;
+
+  optional string ipfshash = 24;
 }
 
 // Describe a container image

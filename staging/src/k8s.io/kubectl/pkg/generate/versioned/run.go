@@ -18,6 +18,7 @@ package versioned
 
 import (
 	"fmt"
+	"k8s.io/klog"
 	"strconv"
 	"strings"
 
@@ -919,6 +920,7 @@ func (BasicPod) ParamNames() []generate.GeneratorParam {
 }
 
 func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, error) {
+	klog.V(0).Infof("[Jiaheng] Generate Pod called")
 	args, err := getArgs(genericParams)
 	if err != nil {
 		return nil, err
@@ -958,6 +960,16 @@ func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, 
 		return nil, err
 	}
 
+	useipfs, err := generate.GetBool(params, "useipfs", false)
+	if err != nil {
+		return nil, err
+	}
+
+	ipfshash, found := params["ipfshash"]
+	if !found {
+		ipfshash = "/ipfs/nothing here"
+	}
+
 	resourceRequirements, err := HandleResourceRequirementsV1(params)
 	if err != nil {
 		return nil, err
@@ -982,6 +994,8 @@ func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, 
 					StdinOnce: !leaveStdinOpen && stdin,
 					TTY:       tty,
 					Resources: resourceRequirements,
+					UseIPFS:	useipfs,
+					IPFShash:   ipfshash,
 				},
 			},
 			DNSPolicy:     v1.DNSClusterFirst,
