@@ -141,7 +141,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 			if _, err := os.Stat(filename); os.IsNotExist(err) {
 				cmd5 := []string{"echo", "123", ">", filename}
 				RunCmd(cmd5[0], cmd5[1:]...)
-				
+
 				cmd2 := []string{"/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:]}
 				_, msg2, err2 := RunCmd(cmd2[0], cmd2[1:]...)
 				if err2 != nil {
@@ -152,7 +152,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		}
 
 		// get image id(ref) from docker
-		cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\"" + imageName}
+		cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" " + imageName}
 		out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
 		if err3 != nil {
 			return "", msg3, ErrImageInspect
