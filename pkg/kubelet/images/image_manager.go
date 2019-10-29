@@ -113,8 +113,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		m.logIt(ref, v1.EventTypeWarning, events.FailedToInspectImage, logPrefix, msg, klog.Warning)
 		return "", msg, ErrInvalidImageName
 	}
-	spec := kubecontainer.ImageSpec{Image: image}
-	imageRef, err := m.imageService.GetImageRef(spec)
+	var spec kubecontainer.ImageSpec
 
 	if image[:6] == "/ipfs/" {
 		downloadPath := "/var/tmp/"
@@ -193,8 +192,12 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		//}
 		//klog.V(0).Infof("[Jiaheng] docker inspect image pass: %s", out3)
 		//imageRef = string(out3)
+		spec = kubecontainer.ImageSpec{Image: imageName}
+	}else{
+		spec = kubecontainer.ImageSpec{Image: image}
 	}
 
+	imageRef, err := m.imageService.GetImageRef(spec)
 	if err != nil {
 		msg := fmt.Sprintf("Failed to inspect image %q: %v", container.Image, err)
 		m.logIt(ref, v1.EventTypeWarning, events.FailedToInspectImage, logPrefix, msg, klog.Warning)
