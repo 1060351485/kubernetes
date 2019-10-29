@@ -193,6 +193,7 @@ func (m *kubeGenericRuntimeManager) startContainer(podSandboxID string, podSandb
 			return msg, fmt.Errorf("%s: %v", ErrPostStartHook, handlerErr)
 		}
 	}
+	klog.V(0).Infof("[Jiaheng][startContainer] all passed")
 
 	return "", nil
 }

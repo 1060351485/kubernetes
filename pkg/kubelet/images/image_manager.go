@@ -157,7 +157,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		if err3 != nil {
 			return "", msg3, ErrImageInspect
 		}else{
-			container.Image = imageName
+			//container.Image = imageName
 			return out3, "", nil
 		}
 		//// image not exist, call ipfs get
