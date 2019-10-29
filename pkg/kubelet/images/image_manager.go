@@ -85,17 +85,9 @@ func (m *imageManager) logIt(ref *v1.ObjectReference, eventtype, event, prefix, 
 	}
 }
 
-func RunCmd(wait bool, name string, args...string) (string, string, error){
+func RunCmd(name string, args...string) (string, string, error){
 	cmd1 := exec.Command(name, args...)
-	var err error
-	var out1 []byte
-	if wait {
-		_ = cmd1.Run()
-		err = cmd1.Wait()
-	}else{
-		out1, err = cmd1.CombinedOutput()
-	}
-
+	out1, err := cmd1.CombinedOutput()
 	if err != nil {
 		msg := fmt.Sprintf("[Jiaheng] run cmd %s, %s failed with error: %s", name, args, err)
 		return "", msg, ErrImageInspect
@@ -126,14 +118,14 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 
 	if image[:6] == "/ipfs/" {
 		downloadPath := "/var/tmp/"
-		imageName := "largeimage/1060351485"
+		imageName := "1060351485/largeimage"
 
 		klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
 
 		// image not exist, call ipfs get
 		if _, err := os.Stat(downloadPath + image[6:]); os.IsNotExist(err) {
 			cmd1 := []string{"/usr/local/bin/ipfs", "get", image[6:], "-o", downloadPath}
-			_, msg1, err1 := RunCmd(true, cmd1[0], cmd1[1:]...)
+			_, msg1, err1 := RunCmd(cmd1[0], cmd1[1:]...)
 			if err1 != nil {
 				return "", msg1, ErrImageInspect
 			}
@@ -141,19 +133,27 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 
 		// if docker already load the image, skip docker load
 		cmd4 := []string{"/bin/sh", "-c", "sudo docker inspect --type=image " + imageName}
-		_, _, err4 := RunCmd(true, cmd4[0], cmd4[1:]...)
+		_, _, err4 := RunCmd(cmd4[0], cmd4[1:]...)
 		if err4 != nil {
 			// need to load image
-			cmd2 := []string{"/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:]}
-			_, msg2, err := RunCmd(true, cmd2[0], cmd2[1:]...)
-			if err != nil {
-				return "", msg2, ErrImageInspect
+			// write a tmp file to /var/tmp to avoid load multiple times
+			filename := downloadPath + image[6:] + ".txt"
+			if _, err := os.Stat(filename); os.IsNotExist(err) {
+				cmd5 := []string{"echo", "123", ">", filename}
+				RunCmd(cmd5[0], cmd5[1:]...)
+				
+				cmd2 := []string{"/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:]}
+				_, msg2, err2 := RunCmd(cmd2[0], cmd2[1:]...)
+				if err2 != nil {
+					return "", msg2, ErrImageInspect
+				}
 			}
+			// otherwise docker load process already started
 		}
 
 		// get image id(ref) from docker
 		cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\"" + imageName}
-		out3, msg3, err3 := RunCmd(false, cmd3[0], cmd3[1:]...)
+		out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
 		if err3 != nil {
 			return "", msg3, ErrImageInspect
 		}else{
