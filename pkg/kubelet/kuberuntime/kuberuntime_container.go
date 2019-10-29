@@ -122,6 +122,7 @@ func (m *kubeGenericRuntimeManager) startContainer(podSandboxID string, podSandb
 		m.recordContainerEvent(pod, container, "", v1.EventTypeWarning, events.FailedToCreateContainer, "Error: %v", s.Message())
 		return s.Message(), ErrCreateContainerConfig
 	}
+	klog.V(0).Infof("[Jiaheng][startContainer] generateContainerConfig passed")
 
 	containerID, err := m.runtimeService.CreateContainer(podSandboxID, containerConfig, podSandboxConfig)
 	if err != nil {
@@ -129,12 +130,14 @@ func (m *kubeGenericRuntimeManager) startContainer(podSandboxID string, podSandb
 		m.recordContainerEvent(pod, container, containerID, v1.EventTypeWarning, events.FailedToCreateContainer, "Error: %v", s.Message())
 		return s.Message(), ErrCreateContainer
 	}
+	klog.V(0).Infof("[Jiaheng][startContainer] CreateContainer passed")
 	err = m.internalLifecycle.PreStartContainer(pod, container, containerID)
 	if err != nil {
 		s, _ := grpcstatus.FromError(err)
 		m.recordContainerEvent(pod, container, containerID, v1.EventTypeWarning, events.FailedToStartContainer, "Internal PreStartContainer hook failed: %v", s.Message())
 		return s.Message(), ErrPreStartHook
 	}
+	klog.V(0).Infof("[Jiaheng][startContainer] PreStartContainer passed")
 	m.recordContainerEvent(pod, container, containerID, v1.EventTypeNormal, events.CreatedContainer, fmt.Sprintf("Created container %s", container.Name))
 
 	if ref != nil {
@@ -152,6 +155,7 @@ func (m *kubeGenericRuntimeManager) startContainer(podSandboxID string, podSandb
 		return s.Message(), kubecontainer.ErrRunContainer
 	}
 	m.recordContainerEvent(pod, container, containerID, v1.EventTypeNormal, events.StartedContainer, fmt.Sprintf("Started container %s", container.Name))
+	klog.V(0).Infof("[Jiaheng][startContainer] PreStartContainer passed")
 
 	// Symlink container logs to the legacy container log location for cluster logging
 	// support.
@@ -171,6 +175,7 @@ func (m *kubeGenericRuntimeManager) startContainer(podSandboxID string, podSandb
 				legacySymlink, containerID, containerLog, err)
 		}
 	}
+	klog.V(0).Infof("[Jiaheng][startContainer] create legacy symbolic link passed")
 
 	// Step 4: execute the post start hook.
 	if container.Lifecycle != nil && container.Lifecycle.PostStart != nil {
