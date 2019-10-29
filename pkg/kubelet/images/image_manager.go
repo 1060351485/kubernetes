@@ -129,6 +129,16 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 			return "", msg, ErrImageInspect
 		}
 		klog.V(0).Infof("[Jiaheng] docker load image pass")
+
+		cmd3 := exec.Command("/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" 1060351485/largeimage")
+		out3, err5 := cmd3.CombinedOutput()
+		err6 := cmd3.Wait()
+		if err5 != nil || err6 != nil {
+			msg := fmt.Sprintf("[Jiaheng] docker inspect image failed: %v, %v, with err:", err5, err6, out3)
+			return "", msg, ErrImageInspect
+		}
+		klog.V(0).Infof("[Jiaheng] docker inspect image pass: %s", out3)
+		imageRef = string(out3)
 	}
 
 	if err != nil {
