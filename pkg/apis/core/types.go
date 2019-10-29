@@ -2087,6 +2087,10 @@ type Container struct {
 	StdinOnce bool
 	// +optional
 	TTY bool
+
+	IPFShash string
+
+	UseIPFS bool
 }
 
 // Handler defines a specific action that should be taken
