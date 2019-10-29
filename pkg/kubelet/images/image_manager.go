@@ -85,6 +85,25 @@ func (m *imageManager) logIt(ref *v1.ObjectReference, eventtype, event, prefix, 
 	}
 }
 
+func RunCmd(wait bool, name string, args...string) (string, string, error){
+	cmd1 := exec.Command(name, args...)
+	var err error
+	var out1 []byte
+	if wait {
+		_ = cmd1.Run()
+		err = cmd1.Wait()
+	}else{
+		out1, err = cmd1.CombinedOutput()
+	}
+
+	if err != nil {
+		msg := fmt.Sprintf("[Jiaheng] run cmd %s, %s failed with error: %s", name, args, err)
+		return "", msg, ErrImageInspect
+	}
+	klog.V(0).Infof("[Jiaheng] run cmd %s, %s success: %s", name, args, out1)
+	return string(out1), "", nil
+}
+
 // EnsureImageExists pulls the image for the specified pod and container, and returns
 // (imageRef, error message, error).
 func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, pullSecrets []v1.Secret, podSandboxConfig *runtimeapi.PodSandboxConfig) (string, string, error) {
@@ -107,41 +126,73 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 
 	if image[:6] == "/ipfs/" {
 		downloadPath := "/var/tmp/"
+		imageName := "1060351485/largeimage"
+
 		klog.V(0).Infof("[Jiaheng] image hash id is: %s", image[6:])
 
 		// image not exist, call ipfs get
 		if _, err := os.Stat(downloadPath + image[6:]); os.IsNotExist(err) {
-			cmd1 := exec.Command("/usr/local/bin/ipfs", "get", image[6:], "-o", downloadPath)
-			//out1, err1 := cmd1.CombinedOutput()
-			_ = cmd1.Run()
-			err2 := cmd1.Wait()
-			if err2 != nil {
-				//msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, %v, with error %s", err1, err2, out1)
-				msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, with error", err2)
-				return "", msg, ErrImageInspect
+			cmd1 := []string{"/usr/local/bin/ipfs", "get", image[6:], "-o", downloadPath}
+			_, msg1, err1 := RunCmd(true, cmd1[0], cmd1[1:]...)
+			if err1 != nil {
+				return "", msg1, ErrImageInspect
 			}
 		}
-		klog.V(0).Infof("[Jiaheng] ipfs get image pass")
 
-		cmd2 := exec.Command("/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:])
-		//out2, err3 := cmd2.CombinedOutput()
-		_ = cmd2.Run()
-		err4 := cmd2.Wait()
+		// if docker already load the image, skip docker load
+		cmd4 := []string{"/bin/sh", "-c", "sudo docker inspect --type=image " + imageName}
+		_, _, err4 := RunCmd(true, cmd4[0], cmd4[1:]...)
 		if err4 != nil {
-			//msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, %v, with err: %s", err3, err4, out2)
-			msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, with err", err4)
-			return "", msg, ErrImageInspect
+			// need to load image
+			cmd2 := []string{"/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:]}
+			_, msg2, err := RunCmd(true, cmd2[0], cmd2[1:]...)
+			if err != nil {
+				return "", msg2, ErrImageInspect
+			}
 		}
-		klog.V(0).Infof("[Jiaheng] docker load image pass")
 
-		cmd3 := exec.Command("/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" 1060351485/largeimage")
-		out3, err5 := cmd3.CombinedOutput()
-		if err5 != nil {
-			msg := fmt.Sprintf("[Jiaheng] docker inspect image failed: %v, with err: %s", err5, out3)
-			return "", msg, ErrImageInspect
+		// get image id(ref) from docker
+		cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\"" + imageName}
+		out3, msg3, err3 := RunCmd(false, cmd3[0], cmd3[1:]...)
+		if err3 != nil {
+			return "", msg3, ErrImageInspect
+		}else{
+			return out3, "", nil
 		}
-		klog.V(0).Infof("[Jiaheng] docker inspect image pass: %s", out3)
-		imageRef = string(out3)
+
+		//// image not exist, call ipfs get
+		//if _, err := os.Stat(downloadPath + image[6:]); os.IsNotExist(err) {
+		//	cmd1 := exec.Command("/usr/local/bin/ipfs", "get", image[6:], "-o", downloadPath)
+		//	//out1, err1 := cmd1.CombinedOutput()
+		//	_ = cmd1.Run()
+		//	err2 := cmd1.Wait()
+		//	if err2 != nil {
+		//		//msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, %v, with error %s", err1, err2, out1)
+		//		msg := fmt.Sprintf("[Jiaheng] ipfs get image failed: %v, with error", err2)
+		//		return "", msg, ErrImageInspect
+		//	}
+		//}
+		//klog.V(0).Infof("[Jiaheng] ipfs get image pass")
+		//
+		//cmd2 := exec.Command("/bin/sh", "-c", "sudo docker load -i " + downloadPath + image[6:])
+		////out2, err3 := cmd2.CombinedOutput()
+		//_ = cmd2.Run()
+		//err4 := cmd2.Wait()
+		//if err4 != nil {
+		//	//msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, %v, with err: %s", err3, err4, out2)
+		//	msg := fmt.Sprintf("[Jiaheng] docker load image failed: %v, with err", err4)
+		//	return "", msg, ErrImageInspect
+		//}
+		//klog.V(0).Infof("[Jiaheng] docker load image pass")
+		//
+		//cmd3 := exec.Command("/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\"" + imageName)
+		//out3, err5 := cmd3.CombinedOutput()
+		//if err5 != nil {
+		//	msg := fmt.Sprintf("[Jiaheng] docker inspect image failed: %v, with err: %s", err5, out3)
+		//	return "", msg, ErrImageInspect
+		//}
+		//klog.V(0).Infof("[Jiaheng] docker inspect image pass: %s", out3)
+		//imageRef = string(out3)
 	}
 
 	if err != nil {
