@@ -242,6 +242,7 @@ func (DeploymentAppsV1) ParamNames() []generate.GeneratorParam {
 }
 
 func (DeploymentAppsV1) Generate(genericParams map[string]interface{}) (runtime.Object, error) {
+	return nil, fmt.Errorf("[Jiaheng] DeploymentAppsV1 Generate called")
 	args, err := getArgs(genericParams)
 	if err != nil {
 		return nil, err
