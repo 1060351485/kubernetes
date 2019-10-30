@@ -1479,6 +1479,9 @@ func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {
 // Callers should not throw an event if this operation returns an error.
 func (kl *Kubelet) syncPod(o syncPodOptions) error {
 	// pull out the required options
+
+	klog.V(0).Infof("[Jiaheng] syncPod called, option: %s", o)
+
 	pod := o.pod
 	mirrorPod := o.mirrorPod
 	podStatus := o.podStatus
