@@ -1480,7 +1480,7 @@ func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {
 func (kl *Kubelet) syncPod(o syncPodOptions) error {
 	// pull out the required options
 
-	klog.V(0).Infof("[Jiaheng] syncPod called, option: %s", o)
+	klog.V(0).Infof("[Jiaheng] syncPod called, option: %s", o.pod.Spec)
 
 	pod := o.pod
 	mirrorPod := o.mirrorPod
