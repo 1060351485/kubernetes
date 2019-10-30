@@ -27,6 +27,8 @@
 
 ## Install services on master node
 
+!! copy kubectl to master node /usr/bin/
+
 5. Setup [etcd] service on **master node**
 
     Download and install etcd service
