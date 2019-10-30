@@ -2088,7 +2088,7 @@ type Container struct {
 	// +optional
 	TTY bool
 
-	IPFShash string
+	IPFSHash string
 
 	UseIPFS bool
 }
@@ -3009,7 +3009,7 @@ type EphemeralContainerCommon struct {
 	// +optional
 	TTY bool
 
-	IPFShash string
+	IPFSHash string
 
 	UseIPFS bool
 }
