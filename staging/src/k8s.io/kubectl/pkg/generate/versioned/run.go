@@ -242,7 +242,6 @@ func (DeploymentAppsV1) ParamNames() []generate.GeneratorParam {
 }
 
 func (DeploymentAppsV1) Generate(genericParams map[string]interface{}) (runtime.Object, error) {
-	return nil, fmt.Errorf("[Jiaheng] DeploymentAppsV1 Generate called")
 	args, err := getArgs(genericParams)
 	if err != nil {
 		return nil, err
@@ -779,6 +778,8 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 	if !found {
 		ipfshash = "/ipfs/nothing here"
 	}
+
+	return nil, fmt.Errorf("[Jiaheng] DeploymentAppsV1 Generate called: %s, %s", useipfs, ipfshash)
 
 	spec := v1.PodSpec{
 		ServiceAccountName: params["serviceaccount"],
