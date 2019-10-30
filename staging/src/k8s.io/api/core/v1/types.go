@@ -2262,9 +2262,9 @@ type Container struct {
 	// +optional
 	TTY bool `json:"tty,omitempty" protobuf:"varint,18,opt,name=tty"`
 
-	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,2,opt,name=ipfsHash"`
+	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,23,opt,name=ipfsHash"`
 
-	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,16,opt,name=useIPFS"`
+	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,24,opt,name=useIPFS"`
 }
 
 // Handler defines a specific action that should be taken
@@ -3369,9 +3369,9 @@ type EphemeralContainerCommon struct {
 	// +optional
 	TTY bool `json:"tty,omitempty" protobuf:"varint,18,opt,name=tty"`
 
-	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,2,opt,name=ipfsHash"`
+	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,23,opt,name=ipfsHash"`
 
-	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,16,opt,name=useIPFS"`
+	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,24,opt,name=useIPFS"`
 }
 
 // EphemeralContainerCommon converts to Container. All fields must be kept in sync between
