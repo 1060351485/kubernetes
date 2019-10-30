@@ -2102,9 +2102,6 @@ const (
 
 // A single application container that you want to run within a pod.
 type Container struct {
-	IPFShash string `json:"ipfshash,omitempty" protobuf:"bytes,2,opt,name=ipfshash"`
-	UseIPFS bool `json:"useipfs,omitempty" protobuf:"varint,16,opt,name=useipfs"`
-
 	// Name of the container specified as a DNS_LABEL.
 	// Each container in a pod must have a unique name (DNS_LABEL).
 	// Cannot be updated.
@@ -2264,6 +2261,10 @@ type Container struct {
 	// Default is false.
 	// +optional
 	TTY bool `json:"tty,omitempty" protobuf:"varint,18,opt,name=tty"`
+
+	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,2,opt,name=ipfsHash"`
+
+	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,16,opt,name=useIPFS"`
 }
 
 // Handler defines a specific action that should be taken
@@ -3241,9 +3242,6 @@ type PodIP struct {
 // to Container and allows separate documentation for the fields of EphemeralContainer.
 // When a new field is added to Container it must be added here as well.
 type EphemeralContainerCommon struct {
-	IPFShash string `json:"ipfshash,omitempty" protobuf:"bytes,2,opt,name=ipfshash"`
-	UseIPFS bool `json:"useipfs,omitempty" protobuf:"varint,16,opt,name=useipfs"`
-
 	// Name of the ephemeral container specified as a DNS_LABEL.
 	// This name must be unique among all containers, init containers and ephemeral containers.
 	Name string `json:"name" protobuf:"bytes,1,opt,name=name"`
@@ -3370,6 +3368,10 @@ type EphemeralContainerCommon struct {
 	// Default is false.
 	// +optional
 	TTY bool `json:"tty,omitempty" protobuf:"varint,18,opt,name=tty"`
+
+	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,2,opt,name=ipfsHash"`
+
+	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,16,opt,name=useIPFS"`
 }
 
 // EphemeralContainerCommon converts to Container. All fields must be kept in sync between
