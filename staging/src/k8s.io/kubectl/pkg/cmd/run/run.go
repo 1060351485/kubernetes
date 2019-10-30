@@ -137,7 +137,7 @@ type RunOptions struct {
 	Quiet          bool
 	Schedule       string
 	TTY            bool
-	IPFShash 	   string
+	IPFSHash 	   string
 	UseIPFS		   bool
 	genericclioptions.IOStreams
 }
@@ -184,7 +184,7 @@ func addRunFlags(cmd *cobra.Command, opt *RunOptions) {
 	cmd.Flags().StringVar(&opt.Generator, "generator", opt.Generator, i18n.T("The name of the API generator to use, see http://kubernetes.io/docs/user-guide/kubectl-conventions/#generators for a list."))
 	cmd.Flags().StringVar(&opt.Image, "image", opt.Image, i18n.T("The image for the container to run."))
 	cmd.MarkFlagRequired("image")
-	cmd.Flags().StringVar(&opt.IPFShash, "ipfshash", opt.IPFShash, i18n.T("The image IPFS hash for the container to run."))
+	cmd.Flags().StringVar(&opt.IPFSHash, "ipfshash", opt.IPFSHash, i18n.T("The image IPFS hash for the container to run."))
 	cmd.Flags().BoolVar(&opt.UseIPFS, "useipfs", opt.UseIPFS, "If true, use IPFS to donwload image.")
 	cmd.Flags().String("image-pull-policy", "", i18n.T("The image pull policy for the container. If left empty, this value will not be specified by the client and defaulted by the server"))
 	cmd.Flags().IntP("replicas", "r", 1, "Number of replicas to create for this container. Default is 1.")
@@ -273,8 +273,8 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 	validImageRef := reference.ReferenceRegexp.MatchString(imageName)
 	klog.V(4).Infof("Image is from IPFS1: %v", imageName)
 
-	if o.UseIPFS && len(o.IPFShash) != 0 {
-		klog.V(4).Infof("Use image from IPFS: %v, hash id is: ", imageName, o.IPFShash)
+	if o.UseIPFS && len(o.IPFSHash) != 0 {
+		klog.V(4).Infof("Use image from IPFS: %v, hash id is: ", imageName, o.IPFSHash)
 	}
 	if len(imageName) > 5 && imageName[:6]=="/ipfs/"{
 		klog.V(4).Infof("Image is from IPFS: %v", imageName)
