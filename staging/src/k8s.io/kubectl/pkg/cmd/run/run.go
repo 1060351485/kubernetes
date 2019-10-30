@@ -685,6 +685,7 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 	if err != nil {
 		return nil, err
 	}
+	return nil, cmdutil.UsageErrorf(cmd, "fake log hhahahhah object: %s", obj)
 
 	mapper, err := f.ToRESTMapper()
 	if err != nil {

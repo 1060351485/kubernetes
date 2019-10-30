@@ -779,8 +779,6 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 		ipfshash = "/ipfs/nothing here"
 	}
 
-	return nil, fmt.Errorf("[Jiaheng] DeploymentAppsV1 Generate called: %s, %s", useipfs, ipfshash)
-
 	spec := v1.PodSpec{
 		ServiceAccountName: params["serviceaccount"],
 		Containers: []v1.Container{
