@@ -379,7 +379,7 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 		return err
 	}
 	createdObjects = append(createdObjects, runObject)
-	return cmdutil.UsageErrorf(cmd, "fake log hhahahhah %s", runObject)
+	return cmdutil.UsageErrorf(cmd, "fake log hhahahhah params: %s ------ runObject: %s", params, runObject)
 
 	allErrs := []error{}
 	if o.Expose {

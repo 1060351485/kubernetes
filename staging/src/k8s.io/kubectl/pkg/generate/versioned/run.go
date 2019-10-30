@@ -56,6 +56,8 @@ func (DeploymentV1Beta1) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
@@ -144,6 +146,8 @@ func (DeploymentAppsV1Beta1) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
@@ -497,6 +501,8 @@ func (CronJobV2Alpha1) ParamNames() []generate.GeneratorParam {
 		{Name: "restart", Required: false},
 		{Name: "schedule", Required: true},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
@@ -699,6 +705,8 @@ func (BasicReplicationController) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
