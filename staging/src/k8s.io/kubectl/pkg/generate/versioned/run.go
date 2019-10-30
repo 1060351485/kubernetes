@@ -232,6 +232,8 @@ func (DeploymentAppsV1) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
@@ -398,6 +400,8 @@ func (JobV1) ParamNames() []generate.GeneratorParam {
 		{Name: "limits", Required: false},
 		{Name: "restart", Required: false},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
@@ -594,6 +598,8 @@ func (CronJobV1Beta1) ParamNames() []generate.GeneratorParam {
 		{Name: "restart", Required: false},
 		{Name: "schedule", Required: true},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
@@ -755,6 +761,16 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 		return nil, err
 	}
 
+	useipfs, err := generate.GetBool(params, "useipfs", false)
+	if err != nil {
+		return nil, err
+	}
+
+	ipfshash, found := params["ipfshash"]
+	if !found {
+		ipfshash = "/ipfs/nothing here"
+	}
+
 	spec := v1.PodSpec{
 		ServiceAccountName: params["serviceaccount"],
 		Containers: []v1.Container{
@@ -764,6 +780,8 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 				Stdin:     stdin,
 				TTY:       tty,
 				Resources: resourceRequirements,
+				UseIPFS:   useipfs,
+				IPFShash:  ipfshash,
 			},
 		},
 	}
@@ -916,6 +934,8 @@ func (BasicPod) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
+		{Name: "useipfs", Required: false},
+		{Name: "ipfshash", Required: false},
 	}
 }
 
