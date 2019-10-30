@@ -56,8 +56,8 @@ func (DeploymentV1Beta1) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -146,8 +146,8 @@ func (DeploymentAppsV1Beta1) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -236,8 +236,8 @@ func (DeploymentAppsV1) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -404,8 +404,8 @@ func (JobV1) ParamNames() []generate.GeneratorParam {
 		{Name: "limits", Required: false},
 		{Name: "restart", Required: false},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -501,8 +501,8 @@ func (CronJobV2Alpha1) ParamNames() []generate.GeneratorParam {
 		{Name: "restart", Required: false},
 		{Name: "schedule", Required: true},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -604,8 +604,8 @@ func (CronJobV1Beta1) ParamNames() []generate.GeneratorParam {
 		{Name: "restart", Required: false},
 		{Name: "schedule", Required: true},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -705,8 +705,8 @@ func (BasicReplicationController) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -769,14 +769,14 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 		return nil, err
 	}
 
-	useipfs, err := generate.GetBool(params, "useipfs", false)
+	useIPFS, err := generate.GetBool(params, "useIPFS", false)
 	if err != nil {
 		return nil, err
 	}
 
-	ipfshash, found := params["ipfshash"]
+	ipfsHash, found := params["ipfsHash"]
 	if !found {
-		ipfshash = "/ipfs/nothing here"
+		ipfsHash = "/ipfs/nothing here"
 	}
 
 	spec := v1.PodSpec{
@@ -788,8 +788,8 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 				Stdin:     stdin,
 				TTY:       tty,
 				Resources: resourceRequirements,
-				UseIPFS:   useipfs,
-				IPFSHash:  ipfshash,
+				UseIPFS:   useIPFS,
+				IPFSHash:  ipfsHash,
 			},
 		},
 	}
@@ -942,8 +942,8 @@ func (BasicPod) ParamNames() []generate.GeneratorParam {
 		{Name: "requests", Required: false},
 		{Name: "limits", Required: false},
 		{Name: "serviceaccount", Required: false},
-		{Name: "useipfs", Required: false},
-		{Name: "ipfshash", Required: false},
+		{Name: "useIPFS", Required: false},
+		{Name: "ipfsHash", Required: false},
 	}
 }
 
@@ -988,14 +988,14 @@ func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, 
 		return nil, err
 	}
 
-	useipfs, err := generate.GetBool(params, "useipfs", false)
+	useIPFS, err := generate.GetBool(params, "useIPFS", false)
 	if err != nil {
 		return nil, err
 	}
 
-	ipfshash, found := params["ipfshash"]
+	ipfsHash, found := params["ipfsHash"]
 	if !found {
-		ipfshash = "/ipfs/nothing here"
+		ipfsHash = "/ipfs/nothing here"
 	}
 
 	resourceRequirements, err := HandleResourceRequirementsV1(params)
@@ -1022,8 +1022,8 @@ func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, 
 					StdinOnce: !leaveStdinOpen && stdin,
 					TTY:       tty,
 					Resources: resourceRequirements,
-					UseIPFS:	useipfs,
-					IPFSHash:   ipfshash,
+					UseIPFS:	useIPFS,
+					IPFSHash:   ipfsHash,
 				},
 			},
 			DNSPolicy:     v1.DNSClusterFirst,
