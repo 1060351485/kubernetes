@@ -686,7 +686,7 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 		return nil, err
 	}
 
-	// [Jiaheng] still have ipfs hash and boolean value here
+	// [Jiaheng] obj still have ipfs hash and boolean value here
 
 	mapper, err := f.ToRESTMapper()
 	if err != nil {
@@ -725,6 +725,8 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 			return nil, err
 		}
 		actualObj, err = resource.NewHelper(client, mapping).Create(namespace, false, obj, nil)
+		return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， Obj: %s， actaullObj:%s", mapping, obj, actualObj)
+
 		if err != nil {
 			return nil, err
 		}
