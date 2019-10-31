@@ -685,7 +685,8 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 	if err != nil {
 		return nil, err
 	}
-	return nil, cmdutil.UsageErrorf(cmd, "fake log hhahahhah object: %s", obj)
+
+	// [Jiaheng] still have ipfs hash and boolean value here
 
 	mapper, err := f.ToRESTMapper()
 	if err != nil {
@@ -728,6 +729,7 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 			return nil, err
 		}
 	}
+	return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， actualObj: %s， overrides:%s", mapping, actualObj, overrides)
 
 	return &RunObject{
 		Object:  actualObj,
