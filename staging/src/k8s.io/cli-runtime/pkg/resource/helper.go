@@ -17,6 +17,7 @@ limitations under the License.
 package resource
 
 import (
+	"fmt"
 	"strconv"
 
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -125,7 +126,8 @@ func (m *Helper) Create(namespace string, modify bool, obj runtime.Object, optio
 			}
 		}
 	}
-
+	return nil, fmt.Errorf("[Jiaheng] Create RESTClient: %s, \n,Resource: %s, \n, namespace:%s\n, obj:%s\n, options:$s",
+		m.RESTClient,m.Resource, namespace, obj, options)
 	return m.createResource(m.RESTClient, m.Resource, namespace, obj, options)
 }
 
