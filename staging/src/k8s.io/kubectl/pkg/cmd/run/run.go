@@ -725,11 +725,12 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 			return nil, err
 		}
 		actualObj, err = resource.NewHelper(client, mapping).Create(namespace, false, obj, nil)
-		return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， Obj: %s， actaullObj:%s", mapping, obj, actualObj)
 
 		if err != nil {
 			return nil, err
 		}
+		return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， Obj: %s， actaullObj:%s", mapping, obj, actualObj)
+
 	}
 	return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， actualObj: %s， overrides:%s", mapping, actualObj, overrides)
 
