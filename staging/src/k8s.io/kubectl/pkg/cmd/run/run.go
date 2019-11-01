@@ -379,7 +379,7 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 		return err
 	}
 	createdObjects = append(createdObjects, runObject)
-	return cmdutil.UsageErrorf(cmd, "fake log hhahahhah generator: %s, params: %s ------ runObject: %s", generatorName, params, runObject)
+	//return cmdutil.UsageErrorf(cmd, "fake log hhahahhah generator: %s, params: %s ------ runObject: %s", generatorName, params, runObject)
 
 	allErrs := []error{}
 	if o.Expose {
@@ -729,10 +729,10 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 		if err != nil {
 			return nil, err
 		}
-		return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， Obj: %s， actaullObj:%s", mapping, obj, actualObj)
+		//return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， Obj: %s， actaullObj:%s", mapping, obj, actualObj)
 
 	}
-	return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， actualObj: %s， overrides:%s", mapping, actualObj, overrides)
+	//return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， actualObj: %s， overrides:%s", mapping, actualObj, overrides)
 
 	return &RunObject{
 		Object:  actualObj,
