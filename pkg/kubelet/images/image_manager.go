@@ -99,7 +99,7 @@ func RunCmd(name string, args...string) (string, string, error){
 // EnsureImageExists pulls the image for the specified pod and container, and returns
 // (imageRef, error message, error).
 func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, pullSecrets []v1.Secret, podSandboxConfig *runtimeapi.PodSandboxConfig) (string, string, error) {
-	klog.V(0).Infof("[Jiaheng] EnsureImageExists called, use ipfs: %s, hash: %s ", container.UseIPFS, container.IPFShash)
+	klog.V(0).Infof("[Jiaheng] EnsureImageExists called, use ipfs: %s, hash: %s ", container.UseIPFS, container.IPFSHash)
 	logPrefix := fmt.Sprintf("%s/%s", pod.Name, container.Image)
 	ref, err := kubecontainer.GenerateContainerRef(pod, container)
 	if err != nil {
