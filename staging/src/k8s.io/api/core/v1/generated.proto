@@ -772,8 +772,12 @@ message Container {
   // +optional
   optional bool tty = 18;
 
+  // Hash id for image from iPFS.
+  // +optional
   optional string ipfsHash = 23;
 
+  // If true, pull image from IPFS.
+  // +optional
   optional bool useIPFS = 24;
 }
 
@@ -1337,8 +1341,12 @@ message EphemeralContainerCommon {
   // +optional
   optional bool tty = 18;
 
+  // Hash id for image from iPFS.
+  // +optional
   optional string ipfsHash = 23;
 
+  // If true, pull image from IPFS.
+  // +optional
   optional bool useIPFS = 24;
 }
 
