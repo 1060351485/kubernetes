@@ -286,7 +286,9 @@
       },
       "stdin": true,
       "tty": true,
-      "targetContainerName": "89"
+      "ipfsHash": "89",
+      "useIPFS": true,
+      "targetContainerName": "90"
     }
   ]
 }

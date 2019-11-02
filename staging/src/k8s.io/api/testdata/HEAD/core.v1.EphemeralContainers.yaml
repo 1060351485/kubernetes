@@ -32,6 +32,7 @@ ephemeralContainers:
       name: "28"
       optional: false
   image: "20"
+  ipfsHash: "89"
   lifecycle:
     postStart:
       exec:
@@ -157,10 +158,11 @@ ephemeralContainers:
       port: "64"
     timeoutSeconds: 1229400382
   stdin: true
-  targetContainerName: "89"
+  targetContainerName: "90"
   terminationMessagePath: "81"
   terminationMessagePolicy: Ņ£
   tty: true
+  useIPFS: true
   volumeDevices:
   - devicePath: "44"
     name: "43"
