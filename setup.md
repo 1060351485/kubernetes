@@ -133,7 +133,7 @@
     ```
     /etc/kubernetes/controller-manager.conf:
 
-    UBE_CONTROLLER_MANAGER_ARGS="--master=http://{your master node IP}:8080 --logtostderr=true --log-dir=/var/log/kubernetes --v=2"
+    UBE_CONTROLLER_MANAGER_ARGS="--master=http://{your master node IP}:8080 --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
     ```
 8. Install kube-scheduler on **master node**
 
