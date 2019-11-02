@@ -2261,9 +2261,11 @@ type Container struct {
 	// Default is false.
 	// +optional
 	TTY bool `json:"tty,omitempty" protobuf:"varint,18,opt,name=tty"`
-
+	// Hash id for image from iPFS.
+	// +optional
 	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,23,opt,name=ipfsHash"`
-
+	// If true, pull image from IPFS.
+	// +optional
 	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,24,opt,name=useIPFS"`
 }
 
@@ -3368,9 +3370,11 @@ type EphemeralContainerCommon struct {
 	// Default is false.
 	// +optional
 	TTY bool `json:"tty,omitempty" protobuf:"varint,18,opt,name=tty"`
-
+	// Hash id for image from iPFS.
+	// +optional
 	IPFSHash string `json:"ipfsHash,omitempty" protobuf:"bytes,23,opt,name=ipfsHash"`
-
+	// If true, pull image from IPFS.
+	// +optional
 	UseIPFS bool `json:"useIPFS,omitempty" protobuf:"varint,24,opt,name=useIPFS"`
 }
 

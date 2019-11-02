@@ -2087,9 +2087,9 @@ type Container struct {
 	StdinOnce bool
 	// +optional
 	TTY bool
-
+	// +optional
 	IPFSHash string
-
+	// +optional
 	UseIPFS bool
 }
 
@@ -3008,9 +3008,9 @@ type EphemeralContainerCommon struct {
 	StdinOnce bool
 	// +optional
 	TTY bool
-
+	// +optional
 	IPFSHash string
-
+	// +optional
 	UseIPFS bool
 }
 
