@@ -18,6 +18,7 @@ package endpoints
 
 import (
 	"fmt"
+	"k8s.io/klog"
 	"net/http"
 	gpath "path"
 	"reflect"
@@ -564,6 +565,7 @@ func (a *APIInstaller) registerResourceHandlers(path string, storage rest.Storag
 	}
 	for _, action := range actions {
 		producedObject := storageMeta.ProducesObject(action.Verb)
+		klog.V(0).Infof("[Jiaheng] registerResourceHandlers %s ", producedObject)
 		if producedObject == nil {
 			producedObject = defaultVersionedObject
 		}
