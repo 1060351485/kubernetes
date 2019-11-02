@@ -78,6 +78,7 @@ func DefaultStacktracePred(status int) bool {
 // WithLogging wraps the handler with logging.
 func WithLogging(handler http.Handler, pred StacktracePred) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		klog.V(0).Infof("[Jiaheng] WithLogging req:%s" ,req)
 		ctx := req.Context()
 		if old := respLoggerFromContext(req); old != nil {
 			panic("multiple WithLogging calls!")
