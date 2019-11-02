@@ -137,8 +137,8 @@ type RunOptions struct {
 	Quiet          bool
 	Schedule       string
 	TTY            bool
-	IPFSHash 	   string
-	UseIPFS		   bool
+	IPFSHash       string
+	UseIPFS        bool
 	genericclioptions.IOStreams
 }
 
@@ -276,9 +276,9 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 	if o.UseIPFS && len(o.IPFSHash) != 0 {
 		klog.V(4).Infof("Use image from IPFS: %v, hash id is: ", imageName, o.IPFSHash)
 	}
-	if len(imageName) > 5 && imageName[:6]=="/ipfs/"{
+	if len(imageName) > 5 && imageName[:6] == "/ipfs/" {
 		klog.V(4).Infof("Image is from IPFS: %v", imageName)
-	}else{
+	} else {
 		if !validImageRef {
 			return fmt.Errorf("Invalid image name %q: %v", imageName, reference.ErrReferenceInvalidFormat)
 		}

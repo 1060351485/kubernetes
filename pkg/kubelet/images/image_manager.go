@@ -85,7 +85,7 @@ func (m *imageManager) logIt(ref *v1.ObjectReference, eventtype, event, prefix, 
 	}
 }
 
-func RunCmd(name string, args...string) (string, string, error){
+func RunCmd(name string, args ...string) (string, string, error) {
 	cmd1 := exec.Command(name, args...)
 	out1, err := cmd1.CombinedOutput()
 	if err != nil {
@@ -156,7 +156,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
 		if err3 != nil {
 			return "", msg3, ErrImageInspect
-		}else{
+		} else {
 			//container.Image = imageName
 			return out3, "", nil
 		}
@@ -193,7 +193,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		//}
 		//klog.V(0).Infof("[Jiaheng] docker inspect image pass: %s", out3)
 		//imageRef = string(out3)
-	}else{
+	} else {
 		spec = kubecontainer.ImageSpec{Image: image}
 		imageRef, err = m.imageService.GetImageRef(spec)
 	}
@@ -245,7 +245,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 // applyDefaultImageTag parses a docker image string, if it doesn't contain any tag or digest,
 // a default tag will be applied.
 func applyDefaultImageTag(image string) (string, error) {
-	if image[:6] == "/ipfs/"{
+	if image[:6] == "/ipfs/" {
 		return image, nil
 	}
 	named, err := dockerref.ParseNormalizedNamed(image)
