@@ -94,6 +94,9 @@ func SetDefaults_Container(obj *v1.Container) {
 	if obj.TerminationMessagePolicy == "" {
 		obj.TerminationMessagePolicy = v1.TerminationMessageReadFile
 	}
+	if len(obj.IPFSHash) == 0 {
+		obj.UseIPFS = false;
+	}
 }
 
 func SetDefaults_Service(obj *v1.Service) {
