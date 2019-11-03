@@ -221,7 +221,6 @@ func applyDefaultImageTag(image string) (string, error) {
 		// image to be fully qualified as docker.io/$name if it's a short name
 		// (e.g. just busybox). We don't want that to happen to keep the CRI
 		// agnostic wrt image names and default hostnames.
-
 		image = image + ":" + parsers.DefaultImageTag
 	}
 	return image, nil
