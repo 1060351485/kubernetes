@@ -125,14 +125,12 @@ func (m *Helper) Create(namespace string, modify bool, obj runtime.Object, optio
 			}
 		}
 	}
-	//return nil, fmt.Errorf("[Jiaheng] Create RESTClient: %s, \n,Resource: %s, \n, namespace:%s\n, obj:%s\n, options:$s",
-	//	m.RESTClient,m.Resource, namespace, obj, options)
-	// [Jiaheng] m.RESTClient may connect to apiserver to get api then filter obj
+
 	return m.createResource(m.RESTClient, m.Resource, namespace, obj, options)
 }
 
 func (m *Helper) createResource(c RESTClient, resource, namespace string, obj runtime.Object, options *metav1.CreateOptions) (runtime.Object, error) {
-	// [Jiaheng] fluent interface
+	// This is called fluent interface
 	return c.Post().
 		NamespaceIfScoped(namespace, m.NamespaceScoped).
 		Resource(resource).

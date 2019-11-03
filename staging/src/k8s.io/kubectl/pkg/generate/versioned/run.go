@@ -18,7 +18,6 @@ package versioned
 
 import (
 	"fmt"
-	"k8s.io/klog"
 	"strconv"
 	"strings"
 
@@ -776,7 +775,7 @@ func makePodSpec(params map[string]string, name string) (*v1.PodSpec, error) {
 
 	ipfshash, found := params["ipfshash"]
 	if !found {
-		ipfshash = "/ipfs/nothing here"
+		ipfshash = ""
 	}
 
 	spec := v1.PodSpec{
@@ -948,7 +947,6 @@ func (BasicPod) ParamNames() []generate.GeneratorParam {
 }
 
 func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, error) {
-	klog.V(0).Infof("[Jiaheng] Generate Pod called")
 	args, err := getArgs(genericParams)
 	if err != nil {
 		return nil, err
@@ -995,7 +993,7 @@ func (BasicPod) Generate(genericParams map[string]interface{}) (runtime.Object, 
 
 	ipfshash, found := params["ipfshash"]
 	if !found {
-		ipfshash = "/ipfs/nothing here"
+		ipfshash = ""
 	}
 
 	resourceRequirements, err := HandleResourceRequirementsV1(params)

@@ -50,7 +50,6 @@ go_library(
         "//staging/src/k8s.io/kubectl/pkg/generate:go_default_library",
         "//staging/src/k8s.io/kubectl/pkg/util:go_default_library",
         "//staging/src/k8s.io/kubectl/pkg/util/hash:go_default_library",
-        "//vendor/k8s.io/klog:go_default_library",
     ],
 )
 

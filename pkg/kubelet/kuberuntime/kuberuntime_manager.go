@@ -772,7 +772,7 @@ func (m *kubeGenericRuntimeManager) SyncPod(pod *v1.Pod, podStatus *kubecontaine
 			return err
 		}
 
-		klog.V(4).Infof("Creating Jiaheng %v %+v in pod %v", typeName, container, format.Pod(pod))
+		klog.V(4).Infof("Creating %v %+v in pod %v", typeName, container, format.Pod(pod))
 		if msg, err := m.startContainer(podSandboxID, podSandboxConfig, container, pod, podStatus, pullSecrets, podIP); err != nil {
 			startContainerResult.Fail(err, msg)
 			// known errors that are logged in other places are logged at higher levels here to avoid

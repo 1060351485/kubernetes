@@ -271,17 +271,11 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 		return fmt.Errorf("--image is required")
 	}
 	validImageRef := reference.ReferenceRegexp.MatchString(imageName)
-	klog.V(4).Infof("Image is from IPFS1: %v", imageName)
 
-	if o.UseIPFS && len(o.IPFSHash) != 0 {
-		klog.V(4).Infof("Use image from IPFS: %v, hash id is: ", imageName, o.IPFSHash)
-	}
-	if len(imageName) > 5 && imageName[:6] == "/ipfs/" {
-		klog.V(4).Infof("Image is from IPFS: %v", imageName)
-	} else {
-		if !validImageRef {
-			return fmt.Errorf("Invalid image name %q: %v", imageName, reference.ErrReferenceInvalidFormat)
-		}
+	klog.V(0).Infof("Use image from IPFS: %v, hash id is: ", imageName, o.IPFSHash)
+
+	if !validImageRef {
+		return fmt.Errorf("Invalid image name %q: %v", imageName, reference.ErrReferenceInvalidFormat)
 	}
 
 	if o.TTY && !o.Interactive {
@@ -379,7 +373,6 @@ func (o *RunOptions) Run(f cmdutil.Factory, cmd *cobra.Command, args []string) e
 		return err
 	}
 	createdObjects = append(createdObjects, runObject)
-	//return cmdutil.UsageErrorf(cmd, "fake log hhahahhah generator: %s, params: %s ------ runObject: %s", generatorName, params, runObject)
 
 	allErrs := []error{}
 	if o.Expose {
@@ -686,8 +679,6 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 		return nil, err
 	}
 
-	// [Jiaheng] obj still have ipfs hash and boolean value here
-
 	mapper, err := f.ToRESTMapper()
 	if err != nil {
 		return nil, err
@@ -715,7 +706,6 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 	}
 
 	actualObj := obj
-	// [Jiaheng] factory
 	if !o.DryRun {
 		if err := util.CreateOrUpdateAnnotation(cmdutil.GetFlagBool(cmd, cmdutil.ApplyAnnotationsFlag), obj, scheme.DefaultJSONEncoder()); err != nil {
 			return nil, err
@@ -729,10 +719,8 @@ func (o *RunOptions) createGeneratedObject(f cmdutil.Factory, cmd *cobra.Command
 		if err != nil {
 			return nil, err
 		}
-		//return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， Obj: %s， actaullObj:%s", mapping, obj, actualObj)
 
 	}
-	//return nil, cmdutil.UsageErrorf(cmd, "[Jiaheng] RESTMapping: %s， --------， actualObj: %s， overrides:%s", mapping, actualObj, overrides)
 
 	return &RunObject{
 		Object:  actualObj,
