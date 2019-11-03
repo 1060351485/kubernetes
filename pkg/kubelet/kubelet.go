@@ -1898,6 +1898,10 @@ func (kl *Kubelet) syncLoopIteration(configCh <-chan kubetypes.PodUpdate, handle
 			return false
 		}
 
+		for i := 0; i < len(u.Pods); i++ {
+			klog.V(0).Infof("[Jiaheng] syncLoopIteration %s, %s",i ,*u.Pods[i])
+		}
+
 		switch u.Op {
 		case kubetypes.ADD:
 			klog.V(2).Infof("SyncLoop (ADD, %q): %q", u.Source, format.Pods(u.Pods))

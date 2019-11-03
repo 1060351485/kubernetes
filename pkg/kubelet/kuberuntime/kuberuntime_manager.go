@@ -463,7 +463,7 @@ func containerSucceeded(c *v1.Container, podStatus *kubecontainer.PodStatus) boo
 // computePodActions checks whether the pod spec has changed and returns the changes if true.
 func (m *kubeGenericRuntimeManager) computePodActions(pod *v1.Pod, podStatus *kubecontainer.PodStatus) podActions {
 	klog.V(5).Infof("Syncing Pod %q: %+v", format.Pod(pod), pod)
-
+	klog.V(0).Info("[Jiaheng] computePodActions called pod: %s", *pod)
 	createPodSandbox, attempt, sandboxID := m.podSandboxChanged(pod, podStatus)
 	changes := podActions{
 		KillPod:           createPodSandbox,
@@ -630,7 +630,7 @@ func (m *kubeGenericRuntimeManager) computePodActions(pod *v1.Pod, podStatus *ku
 //  7. Create normal containers.
 func (m *kubeGenericRuntimeManager) SyncPod(pod *v1.Pod, podStatus *kubecontainer.PodStatus, pullSecrets []v1.Secret, backOff *flowcontrol.Backoff) (result kubecontainer.PodSyncResult) {
 	// Step 1: Compute sandbox and container changes.
-	klog.V(0).Infof("Jiaheng, sync pod")
+	klog.V(0).Infof("[Jiaheng], sync pod")
 	podContainerChanges := m.computePodActions(pod, podStatus)
 	klog.V(3).Infof("computePodActions got %+v for pod %q", podContainerChanges, format.Pod(pod))
 	if podContainerChanges.CreateSandbox {
