@@ -99,7 +99,7 @@ func RunCmd(name string, args ...string) (string, string, error) {
 // EnsureImageExists pulls the image for the specified pod and container, and returns
 // (imageRef, error message, error).
 func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, pullSecrets []v1.Secret, podSandboxConfig *runtimeapi.PodSandboxConfig) (string, string, error) {
-	klog.V(0).Infof("[Jiaheng] EnsureImageExists called, use ipfs: %s, hash: %s ", container.UseIPFS, container.IPFSHash)
+	klog.V(0).Infof("[Jiaheng] EnsureImageExists called, use ipfs: %t, hash: %s ", container.UseIPFS, container.IPFSHash)
 	logPrefix := fmt.Sprintf("%s/%s", pod.Name, container.Image)
 	ref, err := kubecontainer.GenerateContainerRef(pod, container)
 	if err != nil {
@@ -127,13 +127,14 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 				return "", msg1, ErrImageInspect
 			}
 		}
+		klog.V(0).Infof("[Jiaheng] ipfs get called")
 
 		// if docker already load the image, skip docker load
 		cmd4 := []string{"/bin/sh", "-c", "sudo docker inspect --type=image " + image}
 		_, _, err4 := RunCmd(cmd4[0], cmd4[1:]...)
 		if err4 != nil {
 			// need to load image
-			// write a tmp file to /var/tmp to avoid load multiple times
+			// write a tmp file to avoid load multiple times
 			filename := downloadPath + container.IPFSHash + ".txt"
 			if _, err := os.Stat(filename); os.IsNotExist(err) {
 				cmd5 := []string{"echo", "123", ">", filename}
@@ -147,16 +148,16 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 			}
 			// otherwise docker load process already started
 		}
+		klog.V(0).Infof("[Jiaheng] docker load called")
 
-		//// get image id(ref) from docker
-		//cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" " + image}
-		//out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
-		//if err3 != nil {
-		//	return "", msg3, ErrImageInspect
-		//} else {
-		//	//container.Image = imag			//container.Image = imageNameeName
-		//	return out3, "", nil
-		//}
+		// get image id(ref) from docker, then return
+		cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" " + image}
+		out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
+		if err3 != nil {
+			return "", msg3, ErrImageInspect
+		} else {
+			return out3, "", nil
+		}
 	}
 
 	spec := kubecontainer.ImageSpec{Image: image}
