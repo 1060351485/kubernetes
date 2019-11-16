@@ -1,0 +1,23 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: deploy-ipfs
+spec:
+  selector:
+    matchLabels:
+      app: myapp 
+  replicas: 10 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        useIPFS: true
+        ipfsHash: QmNzeYh5ar6j2wNAyeNzXbMLYGJeg3ds6MRyCRxkf41cXy
+        ports:
+        - containerPort: 80
+
+
