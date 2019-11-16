@@ -100,7 +100,7 @@
     ```/etc/kubernetes/apiserver.conf```
 
     ```
-    UBE_API_ARGS="--storage-backend=etcd3 --etcd-servers=http://127.0.0.1:2379 --insecure-bind-address=0.0.0.0 --insecure-port=8080 --service-cluster-ip-range=10.10.10.0/24 --service-node-port-range=1-65535 --admission-control=Namesp
+    KUBE_API_ARGS="--storage-backend=etcd3 --etcd-servers=http://127.0.0.1:2379 --insecure-bind-address=0.0.0.0 --insecure-port=8080 --service-cluster-ip-range=10.10.10.0/24 --service-node-port-range=1-65535 --admission-control=Namesp
     aceLifecycle,NamespaceExists,LimitRanger,ResourceQuota --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
     ```
 
@@ -134,7 +134,7 @@
     ```
     /etc/kubernetes/controller-manager.conf:
 
-    UBE_CONTROLLER_MANAGER_ARGS="--master=http://{your master node IP}:8080 --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
+    KUBE_CONTROLLER_MANAGER_ARGS="--master=http://{your master node IP}:8080 --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
     ```
 8. Install kube-scheduler on **master node**
 
