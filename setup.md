@@ -18,8 +18,9 @@
     ```
     mkdir -p $GOPATH/src/k8s.io
     cd $GOPATH/src/k8s.io
-    git clone https://github.com/kubernetes/kubernetes
+    git clone https://github.com/1060351485/kubernetes
     cd kubernetes
+    git checkout myb
     make
     ```
 4. Binaries are under ``` $GOPATH/src/k8s.io/kubernetes/_output/bin/ ``` folder
