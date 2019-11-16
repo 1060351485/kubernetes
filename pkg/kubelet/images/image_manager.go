@@ -151,13 +151,13 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		klog.V(0).Infof("[Jiaheng] docker load called")
 
 		// get image id(ref) from docker, then return
-		cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" " + image}
-		out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
-		if err3 != nil {
-			return "", msg3, ErrImageInspect
-		} else {
-			return out3, "", nil
-		}
+		//cmd3 := []string{"/bin/sh", "-c", "sudo docker inspect --format=\"{{.Id}}\" " + image}
+		//out3, msg3, err3 := RunCmd(cmd3[0], cmd3[1:]...)
+		//if err3 != nil {
+		//	return "", msg3, ErrImageInspect
+		//} else {
+		//	return out3, "", nil
+		//}
 	}
 
 	spec := kubecontainer.ImageSpec{Image: image}
