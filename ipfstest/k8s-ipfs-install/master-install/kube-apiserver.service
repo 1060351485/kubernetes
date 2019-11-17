@@ -1,0 +1,13 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/kubernetes/kubernetes
+After=etcd.service
+Wants=etcd.service
+[Service]
+EnvironmentFile=/etc/kubernetes/apiserver.conf
+ExecStart=/usr/bin/kube-apiserver $KUBE_API_ARGS
+Restart=on-failure
+Type=notify
+[Install]
+WantedBy=multi-user.target
+
