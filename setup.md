@@ -231,7 +231,7 @@
     ```
     /etc/kubernetes/kubelet.conf
 
-    UBELET_ARGS="--address={your worker node IP} --port=10250 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --cluster-dns=10.10.10.2 --cluster-domain=cluster.local --fail-swap-on=false --alsologtostderr=true --log-dir=/var/log/kubernetes --log-file=kubelet.log --v=4"
+    KUBELET_ARGS="--address={your worker node IP} --port=10250 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --cluster-dns=10.10.10.2 --cluster-domain=cluster.local --fail-swap-on=false --alsologtostderr=true --log-dir=/var/log/kubernetes --log-file=kubelet.log --v=4"
     ```
 
 
