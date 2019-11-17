@@ -18,8 +18,9 @@
     ```
     mkdir -p $GOPATH/src/k8s.io
     cd $GOPATH/src/k8s.io
-    git clone https://github.com/kubernetes/kubernetes
+    git clone https://github.com/1060351485/kubernetes
     cd kubernetes
+    git checkout myb
     make
     ```
 4. Binaries are under ``` $GOPATH/src/k8s.io/kubernetes/_output/bin/ ``` folder
@@ -99,7 +100,7 @@
     ```/etc/kubernetes/apiserver.conf```
 
     ```
-    UBE_API_ARGS="--storage-backend=etcd3 --etcd-servers=http://127.0.0.1:2379 --insecure-bind-address=0.0.0.0 --insecure-port=8080 --service-cluster-ip-range=10.10.10.0/24 --service-node-port-range=1-65535 --admission-control=Namesp
+    KUBE_API_ARGS="--storage-backend=etcd3 --etcd-servers=http://127.0.0.1:2379 --insecure-bind-address=0.0.0.0 --insecure-port=8080 --service-cluster-ip-range=10.10.10.0/24 --service-node-port-range=1-65535 --admission-control=Namesp
     aceLifecycle,NamespaceExists,LimitRanger,ResourceQuota --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
     ```
 
@@ -133,7 +134,7 @@
     ```
     /etc/kubernetes/controller-manager.conf:
 
-    UBE_CONTROLLER_MANAGER_ARGS="--master=http://{your master node IP}:8080 --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
+    KUBE_CONTROLLER_MANAGER_ARGS="--master=http://{your master node IP}:8080 --logtostderr=true --log-dir=/var/log/kubernetes --v=4"
     ```
 8. Install kube-scheduler on **master node**
 
@@ -230,7 +231,7 @@
     ```
     /etc/kubernetes/kubelet.conf
 
-    UBELET_ARGS="--address={your worker node IP} --port=10250 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --cluster-dns=10.10.10.2 --cluster-domain=cluster.local --fail-swap-on=false --alsologtostderr=true --log-dir=/var/log/kubernetes --log-file=kubelet.log --v=4"
+    KUBELET_ARGS="--address={your worker node IP} --port=10250 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig --cluster-dns=10.10.10.2 --cluster-domain=cluster.local --fail-swap-on=false --alsologtostderr=true --log-dir=/var/log/kubernetes --log-file=kubelet.log --v=4"
     ```
 
 

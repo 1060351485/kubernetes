@@ -1,0 +1,12 @@
+[Unit]
+Description=Etcd Server
+After=network-manager.target
+[Service]
+Type=notify
+EnvironmentFile=-/etc/etcd/etcd.conf
+WorkingDirectory=/var/lib/etcd/
+ExecStart=/usr/bin/etcd
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+
