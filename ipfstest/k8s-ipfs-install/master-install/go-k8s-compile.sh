@@ -31,14 +31,15 @@ wget 'https://github.com/etcd-io/etcd/releases/download/v3.3.10/etcd-v3.3.10-lin
 sudo tar -zxvf etcd-v3.3.10-linux-amd64.tar.gz -C /usr/local/src/
 sudo cp /usr/local/src/etcd-v3.3.10-linux-amd64/etc* /usr/bin
 rm etcd-v3.3.10-linux-amd64.tar.gz
-sudo cp etcd.service /usr/lib/systemd/system/
+sudo cp etcd.service /etc/systemd/system/
+sudo mkdir /var/lib/etcd
 # start etcd
-systemctl daemon-reload
+sudo systemctl daemon-reload
 mkdir -p /var/lib/etcd/
-systemctl start etcd.service
-systemctl enable etcd.service
+sudo systemctl start etcd.service
+sudo systemctl enable etcd.service
 # check status
-netstat -anop | grep etcd
+sudo netstat -anop | grep etcd
 etcdctl cluster-health
 
 # copy kubctl bin
@@ -46,19 +47,19 @@ sudo cp $GOPATH/src/k8s.io/kubernetes/_output/bin/kubectl /usr/bin/
 
 # copy kube-apiserver bin
 sudo cp $GOPATH/src/k8s.io/kubernetes/_output/bin/kube-apiserver /usr/bin/
-sudo cp kube-apiserver.service /usr/lib/systemd/system/
-mkdir -p /etc/kubernetes
+sudo cp kube-apiserver.service /etc/systemd/system/
+sudo mkdir -p /etc/kubernetes
 sudo cp apiserver.conf /etc/kubernetes/
 
 # copy kube-controller-manager bin
 sudo cp $GOPATH/src/k8s.io/kubernetes/_output/bin/kube-controller-manager /usr/bin/
-sudo cp kube-controller-manager.service /usr/lib/systemd/system/
+sudo cp kube-controller-manager.service /etc/systemd/system/
 # need fill in master ip
 sudo cp controller-manager.conf /etc/kubernetes/
 
 # copy kube-scheduler bin
 sudo cp $GOPATH/src/k8s.io/kubernetes/_output/bin/kube-scheduler /usr/bin/
-sudo cp kube-scheduler.service /usr/lib/systemd/system/
+sudo cp kube-scheduler.service /etc/systemd/system/
 # need fill in master ip
 sudo cp scheduler.conf /etc/kubernetes/
 
@@ -66,7 +67,7 @@ sudo cp scheduler.conf /etc/kubernetes/
 sudo systemctl daemon-reload
 sudo systemctl enable kube-apiserver.service
 sudo systemctl start kube-apiserver.service
-sudo systemctl enable sudo kube-controller-manager.service
+sudo systemctl enable kube-controller-manager.service
 sudo systemctl start kube-controller-manager.service
 sudo systemctl enable kube-scheduler.service
 sudo systemctl start kube-scheduler.service

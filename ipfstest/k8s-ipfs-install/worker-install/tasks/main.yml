@@ -1,0 +1,163 @@
+---
+- name: install docker, containerd.io, network-manager
+  become: yes
+  become_user: root
+  become_method: sudo
+  apt: 
+    pkg:
+      - docker.io
+      - containerd
+      - network-manager
+
+- name: enable docker service
+  systemd:
+    name: docker
+    enabled: yes
+
+- name: Create /etc/kubernetes/ dir if it does not exist
+  become: yes
+  become_user: root
+  become_method: sudo
+  file:
+    path: /etc/kubernetes/
+    state: directory
+    owner: mkunal
+    group: root
+    mode: '0755'
+    
+- name: Create /var/lib/dockershim/ dir if it does not exist
+  become: yes
+  become_user: root
+  become_method: sudo
+  file:
+    path: /var/lib/dockershim/ 
+    state: directory
+    owner: mkunal
+    group: root
+    mode: '0755'
+    
+- name: copy kubelet to worker
+  become: yes
+  become_user: root
+  become_method: sudo
+  copy:
+    src: /users/mkunal/src/k8s.io/kubernetes/_output/bin/kubelet
+    dest: /usr/local/bin/
+    owner: mkunal
+    group: root
+    mode: 0755
+
+- name: copy kube-proxy to worker
+  become: yes
+  become_user: root
+  become_method: sudo
+  copy:
+    src: /users/mkunal/src/k8s.io/kubernetes/_output/bin/kube-proxy
+    dest: /usr/local/bin/
+    owner: mkunal
+    group: root
+    mode: 0755
+
+- name: copy kubelet.service
+  become: yes
+  become_user: root
+  become_method: sudo
+  copy:
+    src: kubelet.service
+    dest: /etc/systemd/system/
+
+- name: copy kubelet.conf
+  template:
+    src: kubelet.conf
+    dest: /etc/kubernetes/
+
+- name: copy kubelet.kubeconfig
+  template:
+    src: kubelet.kubeconfig
+    dest: /etc/kubernetes/
+  
+- name: copy kube-proxy.service
+  become: yes
+  become_user: root
+  become_method: sudo
+  copy:
+    src: kube-proxy.service
+    dest: /etc/systemd/system/
+
+- name: copy proxy.conf
+  template:
+    src: proxy.conf
+    dest: /etc/kubernetes/
+
+- name: Create /var/lib/kubelet/ dir if it does not exist
+  become: yes
+  become_user: root
+  become_method: sudo
+  file:
+    path: /var/lib/kubelet
+    state: directory
+    owner: mkunal
+    group: root
+    mode: '0755'
+
+- name: enable kubelet service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kubelet
+    enabled: yes
+
+- name: start kubelet service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kubelet
+    state: started
+
+- name: enable kube-proxy service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kube-proxy
+    enabled: yes
+
+- name: start kube-proxy service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kube-proxy
+    state: started
+
+- name: create download folder for go-ipfs
+  become: yes
+  file:
+    state: directory
+    owner: mkunal 
+    group: root
+    dest: /opt/go-ipfs/{{ipfs_version}}
+
+- name: download and unpack go-ipfs
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: "{{ ipfs_dist_url }}/go-ipfs/{{ipfs_version}}/go-ipfs_{{ipfs_version}}_linux-{{ipfs_arch}}.tar.gz"
+    dest: /opt/go-ipfs/{{ipfs_version}}
+    creates: /opt/go-ipfs/{{ipfs_version}}/go-ipfs
+
+- name: link go-ipfs executable
+  become: yes
+  file:
+    state: link
+    owner: mkunal
+    group: root
+    dest: /usr/local/bin/ipfs
+    src: /opt/go-ipfs/{{ipfs_version}}/go-ipfs/ipfs
+
+- name: init IPFS
+  become: yes
+  become_user: mkunal 
+  command: ipfs init

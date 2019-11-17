@@ -1,5 +1,3 @@
-/usr/lib/systemd/system/kube-controller-manager.service:
-
 [Unit]
 Description=Kubernetes Controller Manager
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes

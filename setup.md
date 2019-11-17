@@ -39,6 +39,8 @@
     sudo tar -zxvf etcd-v3.3.10-linux-amd64.tar.gz -C /usr/local/src/
 
     sudo cp /usr/local/src/etcd-v3.3.10-linux-amd64/etc* /usr/bin
+    
+    sudo mkdir /var/lib/etcd
     ```
 
     Add a service config file:
@@ -175,7 +177,7 @@
     sudo systemctl daemon-reload
     sudo systemctl enable kube-apiserver.service
     sudo systemctl start kube-apiserver.service
-    sudo systemctl enable sudo kube-controller-manager.service
+    sudo systemctl enable kube-controller-manager.service
     sudo systemctl start kube-controller-manager.service
     sudo systemctl enable kube-scheduler.service
     sudo systemctl start kube-scheduler.service
