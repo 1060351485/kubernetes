@@ -39,6 +39,8 @@
     sudo tar -zxvf etcd-v3.3.10-linux-amd64.tar.gz -C /usr/local/src/
 
     sudo cp /usr/local/src/etcd-v3.3.10-linux-amd64/etc* /usr/bin
+    
+    sudo mkdir /var/lib/etcd
     ```
 
     Add a service config file:
