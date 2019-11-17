@@ -177,7 +177,7 @@
     sudo systemctl daemon-reload
     sudo systemctl enable kube-apiserver.service
     sudo systemctl start kube-apiserver.service
-    sudo systemctl enable sudo kube-controller-manager.service
+    sudo systemctl enable kube-controller-manager.service
     sudo systemctl start kube-controller-manager.service
     sudo systemctl enable kube-scheduler.service
     sudo systemctl start kube-scheduler.service
