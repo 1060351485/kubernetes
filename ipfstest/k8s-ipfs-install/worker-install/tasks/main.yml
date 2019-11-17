@@ -1,0 +1,107 @@
+--
+- name: install docker, containerd.io, network-manager
+  sudo: yes
+  apt: 
+    pkgs:
+      - docker
+      - containerd.io
+      - network-manager
+
+- name: enable docker service
+  sudo: yes
+  systemd:
+    name: docker
+    enabled: yes
+
+- name: Create /etc/kubernetes/ dir if it does not exist
+  file:
+    path: /etc/kubernetes/
+    state: directory
+    mode: '0755'
+    
+- name: copy kubelet to worker
+  sudo: yes
+  copy:
+    src: /users/mkunal/src/k8s.io/kubernetes/_output/bin/kubelet
+    dest: /usr/bin/
+    owner: mkunal
+    group: root
+    mode: 0755
+
+- name: copy kube-proxy to worker
+  sudo: yes
+  copy:
+    src: /users/mkunal/src/k8s.io/kubernetes/_output/bin/kube-proxy
+    dest: /usr/bin/
+    owner: mkunal
+    group: root
+    mode: 0755
+
+- name: copy kubelet.service
+  sudo: yes
+  copy:
+    src: kubelet.service
+    dest: /usr/lib/systemd/system/
+
+# need modify before run
+- name: copy kubelet.conf
+  copy:
+    src: kubelet.conf
+    dest: /etc/kubernetes/
+
+# need modify before run
+- name: copy kubelet.kubeconfig
+  copy:
+    src: kubelet.kubeconfig
+    dest: /etc/kubernetes/
+  
+- name: copy kube-proxy.service
+  sudo: yes
+  copy:
+    src: kube-proxy.service
+    dest: /usr/lib/systemd/system/
+
+# need modify before run
+- name: copy proxy.conf
+  copy:
+    src: proxy.conf
+    dest: /etc/kubernetes/
+
+- name: Create /var/lib/kubelet/ dir if it does not exist
+  file:
+    path: /var/lib/kubelet
+    state: directory
+    mode: '0755'
+
+- name: enable and start service
+  script: enable_and_start.sh
+
+- name: create download folder for go-ipfs
+  become: yes
+  file:
+    state: directory
+    owner: mkunal 
+    group: root
+    dest: /opt/go-ipfs/{{ipfs_version}}
+
+- name: download and unpack go-ipfs
+  become: yes
+  unarchive:
+    remote_src: yes
+    src: "{{ ipfs_dist_url }}/go-ipfs/{{ipfs_version}}/go-ipfs_{{ipfs_version}}_linux-{{ipfs_arch}}.tar.gz"
+    dest: /opt/go-ipfs/{{ipfs_version}}
+    creates: /opt/go-ipfs/{{ipfs_version}}/go-ipfs
+
+- name: link go-ipfs executable
+  become: yes
+  file:
+    state: link
+    owner: mkunal
+    group: root
+    dest: /usr/local/bin/ipfs
+    src: /opt/go-ipfs/{{ipfs_version}}/go-ipfs/ipfs
+
+- name: init IPFS
+  become: yes
+  become_user: mkunal 
+  command: ipfs init

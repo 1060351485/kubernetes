@@ -1,0 +1,46 @@
+---
+- name: ensure systemd system services directory exists
+  become: yes
+  file:
+    path: /etc/systemd/system
+    state: directory
+
+- name: install ipfs init service
+  become: yes
+  copy:
+    src: ipfs.service
+    dest: /etc/systemd/system/ipfs.service
+    owner: mkunal 
+    group: root 
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart IPFS
+
+- name: copy swarm key
+  copy:
+    src: /users/mkunal/.ipfs/swarm.key 
+    dest: /users/mkunal/.ipfs 
+    owner: mkunal 
+    group: root 
+    mode: 0644
+
+- name: setup bootstrap
+  script: addnodes.sh
+
+- name: reload systemd
+  become: yes
+  tags:
+    - restartipfs
+  systemd:
+    daemon_reload: yes
+
+- name: enable and start IPFS
+  become: yes
+  tags:
+    - restartipfs
+  service:
+    name: ipfs
+    state: started
+    enabled: yes
+    use: systemd

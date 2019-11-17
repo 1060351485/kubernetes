@@ -1,0 +1,11 @@
+[Unit]
+Description=IPFS daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/ipfs daemon
+Restart=on-failure
+User=mkunal
+
+[Install]
+WantedBy=multi-user.target
