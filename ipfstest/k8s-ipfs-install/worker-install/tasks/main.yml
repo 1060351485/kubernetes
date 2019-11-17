@@ -1,80 +1,136 @@
---
+---
 - name: install docker, containerd.io, network-manager
-  sudo: yes
+  become: yes
+  become_user: root
+  become_method: sudo
   apt: 
-    pkgs:
-      - docker
-      - containerd.io
+    pkg:
+      - docker.io
+      - containerd
       - network-manager
 
 - name: enable docker service
-  sudo: yes
   systemd:
     name: docker
     enabled: yes
 
 - name: Create /etc/kubernetes/ dir if it does not exist
+  become: yes
+  become_user: root
+  become_method: sudo
   file:
     path: /etc/kubernetes/
     state: directory
+    owner: mkunal
+    group: root
+    mode: '0755'
+    
+- name: Create /var/lib/dockershim/ dir if it does not exist
+  become: yes
+  become_user: root
+  become_method: sudo
+  file:
+    path: /var/lib/dockershim/ 
+    state: directory
+    owner: mkunal
+    group: root
     mode: '0755'
     
 - name: copy kubelet to worker
-  sudo: yes
+  become: yes
+  become_user: root
+  become_method: sudo
   copy:
     src: /users/mkunal/src/k8s.io/kubernetes/_output/bin/kubelet
-    dest: /usr/bin/
+    dest: /usr/local/bin/
     owner: mkunal
     group: root
     mode: 0755
 
 - name: copy kube-proxy to worker
-  sudo: yes
+  become: yes
+  become_user: root
+  become_method: sudo
   copy:
     src: /users/mkunal/src/k8s.io/kubernetes/_output/bin/kube-proxy
-    dest: /usr/bin/
+    dest: /usr/local/bin/
     owner: mkunal
     group: root
     mode: 0755
 
 - name: copy kubelet.service
-  sudo: yes
+  become: yes
+  become_user: root
+  become_method: sudo
   copy:
     src: kubelet.service
-    dest: /usr/lib/systemd/system/
+    dest: /etc/systemd/system/
 
-# need modify before run
 - name: copy kubelet.conf
-  copy:
+  template:
     src: kubelet.conf
     dest: /etc/kubernetes/
 
-# need modify before run
 - name: copy kubelet.kubeconfig
-  copy:
+  template:
     src: kubelet.kubeconfig
     dest: /etc/kubernetes/
   
 - name: copy kube-proxy.service
-  sudo: yes
+  become: yes
+  become_user: root
+  become_method: sudo
   copy:
     src: kube-proxy.service
-    dest: /usr/lib/systemd/system/
+    dest: /etc/systemd/system/
 
-# need modify before run
 - name: copy proxy.conf
-  copy:
+  template:
     src: proxy.conf
     dest: /etc/kubernetes/
 
 - name: Create /var/lib/kubelet/ dir if it does not exist
+  become: yes
+  become_user: root
+  become_method: sudo
   file:
     path: /var/lib/kubelet
     state: directory
+    owner: mkunal
+    group: root
     mode: '0755'
 
-- name: enable and start service
-  script: enable_and_start.sh
+- name: enable kubelet service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kubelet
+    enabled: yes
+
+- name: start kubelet service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kubelet
+    state: started
+
+- name: enable kube-proxy service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kube-proxy
+    enabled: yes
+
+- name: start kube-proxy service
+  become: yes
+  become_user: root
+  become_method: sudo
+  systemd:
+    name: kube-proxy
+    state: started
 
 - name: create download folder for go-ipfs
   become: yes

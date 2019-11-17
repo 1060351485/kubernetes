@@ -6,7 +6,7 @@ Requires=network-manager.service
 
 [Service]
 EnvironmentFile=/etc/kubernetes/proxy.conf
-ExecStart=/usr/bin/kube-proxy $KUBE_PROXY_ARGS
+ExecStart=/usr/local/bin/kube-proxy $KUBE_PROXY_ARGS
 Restart=on-failure
 LimitNOFILE=65536
 KillMode=process
