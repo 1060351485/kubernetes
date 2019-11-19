@@ -89,7 +89,7 @@ func RunCmd(name string, args ...string) (string, string, error) {
 	cmd1 := exec.Command(name, args...)
 	out1, err := cmd1.CombinedOutput()
 	if err != nil {
-		msg := fmt.Sprintf("[Jiaheng] run cmd %s, %s failed with error: %s", name, args, err)
+		msg := fmt.Sprintf("[Jiaheng] run cmd %s, %s failed with error: %s, %s", name, args, err, out1)
 		return "", msg, ErrImageInspect
 	}
 	klog.V(0).Infof("[Jiaheng] run cmd %s, %s success: %s", name, args, out1)
@@ -122,10 +122,10 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		// image not exist, call ipfs get
 		if _, err := os.Stat(downloadPath + container.IPFSHash); os.IsNotExist(err) {
 			cmd0 := []string{"/usr/local/bin/ipfs", "pin", "add", container.IPFSHash}
-			RunCmd(cmd0[0], cmd0[1:]...)
-			//if err0 != nil {
-			//	return "", msg0, ErrImageInspect
-			//}
+			_, msg0, err0 :=RunCmd(cmd0[0], cmd0[1:]...)
+			if err0 != nil {
+				return "", msg0, ErrImageInspect
+			}
 			cmd1 := []string{"/usr/local/bin/ipfs", "get", container.IPFSHash, "-o", downloadPath}
 			_, msg1, err1 := RunCmd(cmd1[0], cmd1[1:]...)
 			if err1 != nil {
