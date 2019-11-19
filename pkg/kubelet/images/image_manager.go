@@ -121,18 +121,6 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 
 		// image not exist, call ipfs get
 		if _, err := os.Stat(downloadPath + container.IPFSHash); os.IsNotExist(err) {
-			cmd01 := []string{"id"}
-			_, msg01, err01 :=RunCmd(cmd01[0], cmd01[1:]...)
-			if err01 != nil {
-				return "", msg01, ErrImageInspect
-			}
-			klog.V(0).Info(msg01)
-			cmd02 := []string{"which", "ipfs"}
-			_, msg02, err02 :=RunCmd(cmd02[0], cmd02[1:]...)
-			if err02 != nil {
-				return "", msg02, ErrImageInspect
-			}
-			klog.V(0).Info(msg02)
 			cmd0 := []string{"/usr/local/bin/ipfs", "pin", "add", container.IPFSHash}
 			_, msg0, err0 :=RunCmd(cmd0[0], cmd0[1:]...)
 			if err0 != nil {
