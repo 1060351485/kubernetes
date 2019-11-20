@@ -123,7 +123,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 		if _, err := os.Stat(downloadPath + container.IPFSHash); os.IsNotExist(err) {
 			klog.V(0).Infof("[Jiaheng] enter image not exist")
 
-			cmd0 := []string{ "runuser", "-l", "mkunal", "-c", "'/usr/local/bin/ipfs pin add "+ container.IPFSHash+ "'"}
+			cmd0 := []string{ "runuser", "-l", "mkunal", "-c", "/usr/local/bin/ipfs pin add "+ container.IPFSHash}
 			//cmd0 := []string{ "/usr/local/bin/ipfs", "pin", "add", container.IPFSHash}
 			_, msg0, err0 :=RunCmd(cmd0[0], cmd0[1:]...)
 			if err0 != nil {
@@ -131,7 +131,7 @@ func (m *imageManager) EnsureImageExists(pod *v1.Pod, container *v1.Container, p
 			}
 			klog.V(0).Infof("[Jiaheng] ipfs pin add called")
 
-			cmd1 := []string{"runuser", "-l" ,"mkunal", "-c", "'/usr/local/bin/ipfs get "+container.IPFSHash + " -o "+downloadPath+"'"}
+			cmd1 := []string{"runuser", "-l" ,"mkunal", "-c", "/usr/local/bin/ipfs get "+container.IPFSHash + " -o "+downloadPath}
 			//cmd1 := []string{"/usr/local/bin/ipfs", "get", container.IPFSHash, "-o", downloadPath}
 			_, msg1, err1 := RunCmd(cmd1[0], cmd1[1:]...)
 			if err1 != nil {
