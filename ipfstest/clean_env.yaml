@@ -1,0 +1,11 @@
+---
+- name: Transfer and execute a script.
+  hosts: ipfs_nodes
+  user: mkunal
+  tasks:
+     - name: Transfer the script
+       copy: src=clean_env.sh dest=/users/mkunal mode=0777
+
+     - name: Execute the script
+       local_action: command sh /users/mkunal/clean_env.sh
+

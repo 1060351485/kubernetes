@@ -15,6 +15,8 @@ still_running(){
 run_test(){
     # need to clean the env on worker nodes. 
     # Call an ansible command to run the clean_env.sh script
+    # !!! need test
+    # ansible-playbook clean_env.yaml -f 10
 
     # record time
     d1=`date +%s%N`
