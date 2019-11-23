@@ -1,12 +1,5 @@
 #!/bin/bash
 
-reset_env_before_run(){
-    ansible para -i hosts.txt -m script -a "./clean_env.sh" -b=true;
-}
-
-start_service(){
-    ansible para -i hosts.txt -m script -a "./start_service.sh" -b=true;
-}
 
 still_running(){
    count=`kubectl get deploy -o json | jq '.items[0].status.readyReplicas'`
@@ -20,8 +13,8 @@ still_running(){
 }
 
 run_test(){
-    # reset_env_before_run();
-    # start_service();
+    # need to clean the env on worker nodes. 
+    # Call an ansible command to run the clean_env.sh script
 
     # record time
     d1=`date +%s%N`
