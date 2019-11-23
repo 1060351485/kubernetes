@@ -1,15 +1,7 @@
-#!/bin/sh
-
-docker stop $(docker ps -a -q)
-docker rm -f $(docker ps -a -q)
-docker rmi -f $(docker images -a -q)
-
-systemctl stop docker
-
-rm -rf /var/tmp/k8sipfs
-
-killall ipfs
-
-# ipfs clear cache?
-
-
+sudo docker stop $(sudo docker ps -a -q)
+sudo docker rm $(sudo docker ps -a -q)
+sudo docker rmi $(sudo docker images -q)
+sudo rm -rf /var/tmp/k8sipfs/*
+ipfs pin ls --type recursive | cut -d' ' -f1 | xargs -n1 ipfs pin rm
+ipfs repo gc
+sudo systemctl restart kubelet
